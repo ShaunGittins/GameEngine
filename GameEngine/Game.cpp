@@ -17,3 +17,21 @@ Game::~Game() {
 	SDL_Quit();
 	cout << "Game terminated" << endl;
 }
+
+void Game::Input() {
+	SDL_PollEvent(&_event);
+	if (_event.type == SDL_KEYDOWN) {
+		switch (_event.key.keysym.scancode) {
+			case SDL_SCANCODE_ESCAPE: _running = false; break;
+			default: break;
+		}
+	}
+}
+
+void Game::Update() {
+
+}
+
+void Game::Render() {
+
+}

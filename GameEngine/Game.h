@@ -7,6 +7,10 @@ public:
 	Game(SDL_Window* window);
 	~Game();
 
+	void Input();
+	void Update();
+	void Render();
+
 	bool _running;
 
 private:
