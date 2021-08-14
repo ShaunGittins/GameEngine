@@ -4,7 +4,18 @@
 using std::cout;
 using std::endl;
 
+const float MOVEMENT_SPEED = 1;
 SDL_Rect rect;
+
+class ControlInput {
+public:
+	bool left = false;
+	bool right = false;
+	bool up = false;
+	bool down = false;
+};
+
+ControlInput controlInput;
 
 Game::Game(SDL_Window* window) {
 	_window = window;
@@ -31,18 +42,31 @@ void Game::Init()
 }
 
 void Game::Input() {
+	const Uint8 *keyboard_state = SDL_GetKeyboardState(NULL);
+
 	SDL_PollEvent(&_event);
-	if (_event.type == SDL_KEYDOWN) {
-		switch (_event.key.keysym.scancode) {
-			case SDL_SCANCODE_ESCAPE: _running = false; break;
-			case SDL_SCANCODE_Q: rect.x += 1; break;
-			default: break;
-		}
+
+	if (_event.type == SDL_KEYDOWN || _event.type == SDL_KEYUP) {
+		controlInput.up = (keyboard_state[SDL_SCANCODE_W] && !(keyboard_state[SDL_SCANCODE_S]));
+		controlInput.down = (!keyboard_state[SDL_SCANCODE_W] && (keyboard_state[SDL_SCANCODE_S]));
+		controlInput.left = (keyboard_state[SDL_SCANCODE_A] && !(keyboard_state[SDL_SCANCODE_D]));
+		controlInput.right = (!keyboard_state[SDL_SCANCODE_A] && (keyboard_state[SDL_SCANCODE_D]));
 	}
 }
 
-void Game::Update() {
-	
+void Game::Update(Uint32 delta_time) {
+	if (controlInput.left) {
+		rect.x -= MOVEMENT_SPEED * delta_time;
+	}
+	if (controlInput.right) {
+		rect.x += MOVEMENT_SPEED * delta_time;
+	}
+	if (controlInput.up) {
+		rect.y -= MOVEMENT_SPEED * delta_time;
+	}
+	if (controlInput.down) {
+		rect.y += MOVEMENT_SPEED * delta_time;
+	}
 }
 
 void Game::Render() {
