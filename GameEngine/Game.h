@@ -7,6 +7,8 @@ public:
 	Game(SDL_Window* window);
 	~Game();
 
+	void Init();
+
 	void Input();
 	void Update();
 	void Render();
