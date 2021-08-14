@@ -14,6 +14,5 @@ int main(int argc, char* args[]) {
 	}
 
 	delete game;
-	SDL_DestroyWindow(window);
 	return 0;
 }
