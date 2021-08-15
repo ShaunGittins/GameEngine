@@ -1,6 +1,6 @@
 #include "TransformComponent.h"
 
-TransformComponent::TransformComponent(int posX, int posY, int rotation, int width, int height)
+TransformComponent::TransformComponent(float posX, float posY, float rotation, float width, float height)
 {
 	_posX = posX;
 	_posY = posY;

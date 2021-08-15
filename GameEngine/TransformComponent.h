@@ -4,13 +4,13 @@
 class TransformComponent : public IComponent
 {
 public:
-	TransformComponent(int posX, int posY, int rotation, int width, int height);
+	TransformComponent(float posX, float posY, float rotation, float width, float height);
 
 	// TODO: Create Vector2 object for TransformComponent to use
-	int _posX;
-	int _posY;
-	int _rotation;
-	int _width;
-	int _height;
+	float _posX;
+	float _posY;
+	float _rotation;
+	float _width;
+	float _height;
 };
 

@@ -9,7 +9,7 @@
 using std::cout;
 using std::endl;
 
-const int MOVEMENT_SPEED = 1;
+const float MOVEMENT_SPEED = 0.5f;
 
 class ControlInput {
 public:
@@ -94,14 +94,14 @@ void Game::Render() {
 	if (myEntity->GetComponent<TransformComponent>() && myEntity->GetComponent<RenderComponent>()) {
 		if (myEntity->GetComponent<RenderComponent>()->isVisible) {
 			TransformComponent* tc = myEntity->GetComponent<TransformComponent>();
-			SDL_Rect rect;
+			SDL_FRect rect;
 			rect.x = tc->_posX;
 			rect.y = tc->_posY;
 			rect.w = tc->_width;
 			rect.h = tc->_height;
 
 			SDL_SetRenderDrawColor(_renderer, 255, 0, 0, 255);
-			SDL_RenderFillRect(_renderer, &rect);
+			SDL_RenderFillRectF(_renderer, &rect);
 		}
 	}
 
