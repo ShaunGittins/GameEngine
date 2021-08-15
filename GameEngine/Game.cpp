@@ -37,9 +37,6 @@ Game::Game(SDL_Window* window) {
 
 Game::~Game() {
 	delete myEntity;
-	delete myNameComponent;
-	delete myRenderComponent;
-	delete myTransformComponent;
 
 	SDL_DestroyWindow(_window);
 	SDL_DestroyRenderer(_renderer);
@@ -52,21 +49,17 @@ void Game::Init()
 	myEntity = new Entity();
 	cout << myEntity->_id << endl;
 
-	myNameComponent = new Name("Steve");
-	myEntity->AddComponent(myNameComponent);
-
-	myRenderComponent = new RenderComponent();
-	myEntity->AddComponent(myRenderComponent);
-
-	// TODO: ScaleX and ScaleY instead of width and height, not everything will be a rect
-	Vector2 myInitPos = Vector2(250, 150);
-	Vector2 myInitScale = Vector2(48, 48);
-	myTransformComponent = new TransformComponent(myInitPos, 0.0f, myInitScale);
-	myEntity->AddComponent(myTransformComponent);
+	myEntity->AddComponent(new Name("Steve"));
 
 	if (myEntity->GetComponent<Name>()) {
 		myEntity->GetComponent<Name>()->PrintNameToConsole();
 	}
+
+	myEntity->AddComponent(new RenderComponent());
+
+	Vector2 myInitPos = Vector2(250, 150);
+	Vector2 myInitScale = Vector2(48, 48);
+	myEntity->AddComponent(new TransformComponent(myInitPos, 0.0f, myInitScale));
 }
 
 void Game::Input() {
@@ -79,6 +72,9 @@ void Game::Input() {
 		controlInput.down = (!keyboard_state[SDL_SCANCODE_W] && (keyboard_state[SDL_SCANCODE_S]));
 		controlInput.left = (keyboard_state[SDL_SCANCODE_A] && !(keyboard_state[SDL_SCANCODE_D]));
 		controlInput.right = (!keyboard_state[SDL_SCANCODE_A] && (keyboard_state[SDL_SCANCODE_D]));
+		if (keyboard_state[SDL_SCANCODE_ESCAPE]) {
+			_running = false;
+		}
 	}
 }
 
