@@ -5,7 +5,7 @@
 using std::cout;
 using std::endl;
 
-const float MOVEMENT_SPEED = 1;
+const int MOVEMENT_SPEED = 1;
 SDL_Rect rect;
 
 class ControlInput {
