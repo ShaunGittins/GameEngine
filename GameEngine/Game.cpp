@@ -1,6 +1,8 @@
 #include "Game.h"
 #include <iostream>
 #include "Entity.h"
+#include "Name.h"
+#include "IComponent.h"
 
 using std::cout;
 using std::endl;
@@ -38,6 +40,14 @@ void Game::Init()
 {
 	Entity* myEntity = new Entity();
 	cout << myEntity->_id << endl;
+
+	Name* myNameComponent = new Name("Steve");
+	myEntity->AddComponent(myNameComponent);
+
+	if (myEntity->GetComponent<Name>()) {
+		myEntity->GetComponent<Name>()->PrintNameToConsole();
+	}
+	
 
 	rect.x = 250;
 	rect.y = 150;
