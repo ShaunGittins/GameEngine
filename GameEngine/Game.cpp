@@ -2,6 +2,7 @@
 #include <iostream>
 #include "Entity.h"
 #include "Name.h"
+#include "RenderComponent.h"
 #include "IComponent.h"
 
 using std::cout;
@@ -44,10 +45,21 @@ void Game::Init()
 	Name* myNameComponent = new Name("Steve");
 	myEntity->AddComponent(myNameComponent);
 
+	RenderComponent* myRenderComponent = new RenderComponent();
+	myEntity->AddComponent(myRenderComponent);
+
 	if (myEntity->GetComponent<Name>()) {
 		myEntity->GetComponent<Name>()->PrintNameToConsole();
 	}
 	
+	if (myEntity->GetComponent<RenderComponent>()) {
+		if (myEntity->GetComponent<RenderComponent>()->isVisible) {
+			cout << "MyEntity is visible" << endl;
+		}
+		else {
+			cout << "MyEntity is not visible" << endl;
+		}
+	}
 
 	rect.x = 250;
 	rect.y = 150;
