@@ -1,5 +1,6 @@
 #include "Game.h"
 #include <iostream>
+#include "Entity.h"
 
 using std::cout;
 using std::endl;
@@ -35,6 +36,9 @@ Game::~Game() {
 
 void Game::Init()
 {
+	Entity* myEntity = new Entity();
+	cout << myEntity->_id << endl;
+
 	rect.x = 250;
 	rect.y = 150;
 	rect.w = 200;
