@@ -1,16 +1,14 @@
 #pragma once
 #include "IComponent.h"
+#include "Vector2.h"
 
 class TransformComponent : public IComponent
 {
 public:
-	TransformComponent(float posX, float posY, float rotation, float width, float height);
+	TransformComponent(Vector2 position, float rotation, Vector2 scale);
 
-	// TODO: Create Vector2 object for TransformComponent to use
-	float _posX;
-	float _posY;
+	Vector2 _position;
 	float _rotation;
-	float _width;
-	float _height;
+	Vector2 _scale;
 };
 

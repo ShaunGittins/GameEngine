@@ -21,6 +21,11 @@ public:
 
 ControlInput controlInput;
 
+Entity* myEntity;
+Name* myNameComponent;
+RenderComponent* myRenderComponent;
+TransformComponent* myTransformComponent;
+
 Game::Game(SDL_Window* window) {
 	_window = window;
 	_renderer = SDL_CreateRenderer(_window, -1, 0);
@@ -31,27 +36,32 @@ Game::Game(SDL_Window* window) {
 }
 
 Game::~Game() {
+	delete myEntity;
+	delete myNameComponent;
+	delete myRenderComponent;
+	delete myTransformComponent;
+
 	SDL_DestroyWindow(_window);
 	SDL_DestroyRenderer(_renderer);
 	SDL_Quit();
 	cout << "Game terminated" << endl;
 }
 
-Entity* myEntity;
-
 void Game::Init()
 {
 	myEntity = new Entity();
 	cout << myEntity->_id << endl;
 
-	Name* myNameComponent = new Name("Steve");
+	myNameComponent = new Name("Steve");
 	myEntity->AddComponent(myNameComponent);
 
-	RenderComponent* myRenderComponent = new RenderComponent();
+	myRenderComponent = new RenderComponent();
 	myEntity->AddComponent(myRenderComponent);
 
 	// TODO: ScaleX and ScaleY instead of width and height, not everything will be a rect
-	TransformComponent* myTransformComponent = new TransformComponent(250, 150, 0, 200, 200);
+	Vector2 myInitPos = Vector2(250, 150);
+	Vector2 myInitScale = Vector2(48, 48);
+	myTransformComponent = new TransformComponent(myInitPos, 0.0f, myInitScale);
 	myEntity->AddComponent(myTransformComponent);
 
 	if (myEntity->GetComponent<Name>()) {
@@ -75,16 +85,16 @@ void Game::Input() {
 void Game::Update(Uint32 delta_time) {
 	TransformComponent* tc = myEntity->GetComponent<TransformComponent>();
 	if (controlInput.left) {
-		tc->_posX -= MOVEMENT_SPEED * delta_time;
+		tc->_position._x -= MOVEMENT_SPEED * delta_time;
 	}
 	if (controlInput.right) {
-		tc->_posX += MOVEMENT_SPEED * delta_time;
+		tc->_position._x += MOVEMENT_SPEED * delta_time;
 	}
 	if (controlInput.up) {
-		tc->_posY -= MOVEMENT_SPEED * delta_time;
+		tc->_position._y -= MOVEMENT_SPEED * delta_time;
 	}
 	if (controlInput.down) {
-		tc->_posY += MOVEMENT_SPEED * delta_time;
+		tc->_position._y += MOVEMENT_SPEED * delta_time;
 	}
 }
 
@@ -95,10 +105,10 @@ void Game::Render() {
 		if (myEntity->GetComponent<RenderComponent>()->isVisible) {
 			TransformComponent* tc = myEntity->GetComponent<TransformComponent>();
 			SDL_FRect rect;
-			rect.x = tc->_posX;
-			rect.y = tc->_posY;
-			rect.w = tc->_width;
-			rect.h = tc->_height;
+			rect.x = tc->_position._x;
+			rect.y = tc->_position._y;
+			rect.w = tc->_scale._x;
+			rect.h = tc->_scale._y;
 
 			SDL_SetRenderDrawColor(_renderer, 255, 0, 0, 255);
 			SDL_RenderFillRectF(_renderer, &rect);

@@ -1,10 +1,8 @@
 #include "TransformComponent.h"
 
-TransformComponent::TransformComponent(float posX, float posY, float rotation, float width, float height)
+TransformComponent::TransformComponent(Vector2 position, float rotation, Vector2 scale)
 {
-	_posX = posX;
-	_posY = posY;
+	_position = position;
 	_rotation = rotation;
-	_width = width;
-	_height = height;
+	_scale = scale;
 }
