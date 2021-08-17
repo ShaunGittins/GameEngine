@@ -5,9 +5,12 @@
 #include "RenderComponent.h"
 #include "TransformComponent.h"
 #include "IComponent.h"
+#include "RenderSystem.h"
 
 using std::cout;
 using std::endl;
+
+RenderSystem* rs;
 
 const float MOVEMENT_SPEED = 0.5f;
 
@@ -37,6 +40,7 @@ Game::Game(SDL_Window* window) {
 
 Game::~Game() {
 	delete myEntity;
+	delete rs;
 
 	SDL_DestroyWindow(_window);
 	SDL_DestroyRenderer(_renderer);
@@ -46,6 +50,8 @@ Game::~Game() {
 
 void Game::Init()
 {
+	rs = new RenderSystem();
+
 	myEntity = new Entity();
 	cout << myEntity->_id << endl;
 
@@ -97,6 +103,7 @@ void Game::Update(Uint32 delta_time) {
 void Game::Render() {
 	SDL_RenderClear(_renderer);
 
+	
 	if (myEntity->GetComponent<TransformComponent>() && myEntity->GetComponent<RenderComponent>()) {
 		if (myEntity->GetComponent<RenderComponent>()->isVisible) {
 			TransformComponent* tc = myEntity->GetComponent<TransformComponent>();
