@@ -10,8 +10,6 @@
 using std::cout;
 using std::endl;
 
-RenderSystem* rs;
-
 const float MOVEMENT_SPEED = 0.5f;
 
 class ControlInput {
@@ -33,25 +31,24 @@ Game::Game(SDL_Window* window) {
 	_window = window;
 	_renderer = SDL_CreateRenderer(_window, -1, 0);
 	SDL_SetRenderDrawColor(_renderer, 255, 255, 255, 255);
+
+	_renderSystem = new RenderSystem(_renderer);
+
 	_running = true;
 	Init();
-	cout << "Game initialized" << endl;
 }
 
 Game::~Game() {
 	delete myEntity;
-	delete rs;
+	delete _renderSystem;
 
 	SDL_DestroyWindow(_window);
 	SDL_DestroyRenderer(_renderer);
 	SDL_Quit();
-	cout << "Game terminated" << endl;
 }
 
 void Game::Init()
 {
-	rs = new RenderSystem(_renderer);
-
 	myEntity = new Entity();
 	cout << myEntity->_id << endl;
 
@@ -68,7 +65,7 @@ void Game::Init()
 	Vector2 myInitScale = Vector2(48, 48);
 	myEntity->AddComponent(new TransformComponent(myInitPos, 0.0f, myInitScale));
 
-	rs->AddComponentReference(myEntityRenderComponent);
+	_renderSystem->AddComponentReference(myEntityRenderComponent);
 }
 
 void Game::Input() {
@@ -106,7 +103,7 @@ void Game::Update(Uint32 delta_time) {
 void Game::Render() {
 	SDL_RenderClear(_renderer);
 
-	rs->Render();
+	_renderSystem->Render();
 
 	SDL_SetRenderDrawColor(_renderer, 255, 255, 255, 255);
 	SDL_RenderPresent(_renderer);

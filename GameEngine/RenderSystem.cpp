@@ -7,12 +7,10 @@ using std::endl;
 RenderSystem::RenderSystem(SDL_Renderer* renderer)
 {
 	_renderer = renderer;
-	cout << "#Render system init" << endl;
 }
 
 RenderSystem::~RenderSystem()
 {
-	cout << "#Render system delete" << endl;
 }
 
 void RenderSystem::Render()

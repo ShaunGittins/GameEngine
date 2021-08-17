@@ -1,5 +1,6 @@
 #pragma once
 #include "SDL.h"
+#include "RenderSystem.h"
 
 class Game
 {
@@ -17,6 +18,8 @@ private:
 	SDL_Window* _window;
 	SDL_Renderer* _renderer;
 	SDL_Event _event;
+
+	RenderSystem* _renderSystem;
 
 	void Init();
 };
