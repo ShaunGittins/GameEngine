@@ -159,7 +159,7 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="IComponent.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="Name.cpp" />
+    <ClCompile Include="NameComponent.cpp" />
     <ClCompile Include="RenderComponent.cpp" />
     <ClCompile Include="RenderSystem.cpp" />
     <ClCompile Include="TransformComponent.cpp" />
@@ -169,7 +169,7 @@
     <ClInclude Include="Entity.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="IComponent.h" />
-    <ClInclude Include="Name.h" />
+    <ClInclude Include="NameComponent.h" />
     <ClInclude Include="RenderComponent.h" />
     <ClInclude Include="RenderSystem.h" />
     <ClInclude Include="TransformComponent.h" />

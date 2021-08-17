@@ -2,10 +2,10 @@
 #include "IComponent.h"
 #include <string>
 
-class Name : public IComponent
+class NameComponent : public IComponent
 {
 public:
-	Name(std::string name);
+	NameComponent(std::string name);
 
 	std::string _name;
 

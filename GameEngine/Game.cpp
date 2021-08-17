@@ -1,7 +1,7 @@
 #include "Game.h"
 #include <iostream>
 #include "Entity.h"
-#include "Name.h"
+#include "NameComponent.h"
 #include "RenderComponent.h"
 #include "TransformComponent.h"
 #include "IComponent.h"
@@ -23,7 +23,7 @@ public:
 ControlInput controlInput;
 
 Entity* myEntity;
-Name* myNameComponent;
+NameComponent* myNameComponent;
 RenderComponent* myRenderComponent;
 TransformComponent* myTransformComponent;
 
@@ -52,10 +52,10 @@ void Game::Init()
 	myEntity = new Entity();
 	cout << myEntity->_id << endl;
 
-	myEntity->AddComponent(new Name("Steve"));
+	myEntity->AddComponent(new NameComponent("Steve"));
 
-	if (myEntity->GetComponent<Name>()) {
-		myEntity->GetComponent<Name>()->PrintNameToConsole();
+	if (myEntity->GetComponent<NameComponent>()) {
+		myEntity->GetComponent<NameComponent>()->PrintNameToConsole();
 	}
 
 	RenderComponent* myEntityRenderComponent = new RenderComponent();
