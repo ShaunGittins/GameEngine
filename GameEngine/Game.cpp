@@ -50,7 +50,7 @@ Game::~Game() {
 
 void Game::Init()
 {
-	rs = new RenderSystem();
+	rs = new RenderSystem(_renderer);
 
 	myEntity = new Entity();
 	cout << myEntity->_id << endl;
@@ -61,11 +61,14 @@ void Game::Init()
 		myEntity->GetComponent<Name>()->PrintNameToConsole();
 	}
 
-	myEntity->AddComponent(new RenderComponent());
+	RenderComponent* myEntityRenderComponent = new RenderComponent();
+	myEntity->AddComponent(myEntityRenderComponent);
 
 	Vector2 myInitPos = Vector2(250, 150);
 	Vector2 myInitScale = Vector2(48, 48);
 	myEntity->AddComponent(new TransformComponent(myInitPos, 0.0f, myInitScale));
+
+	rs->AddComponentReference(myEntityRenderComponent);
 }
 
 void Game::Input() {
@@ -103,20 +106,7 @@ void Game::Update(Uint32 delta_time) {
 void Game::Render() {
 	SDL_RenderClear(_renderer);
 
-	
-	if (myEntity->GetComponent<TransformComponent>() && myEntity->GetComponent<RenderComponent>()) {
-		if (myEntity->GetComponent<RenderComponent>()->isVisible) {
-			TransformComponent* tc = myEntity->GetComponent<TransformComponent>();
-			SDL_FRect rect;
-			rect.x = tc->_position._x;
-			rect.y = tc->_position._y;
-			rect.w = tc->_scale._x;
-			rect.h = tc->_scale._y;
-
-			SDL_SetRenderDrawColor(_renderer, 255, 0, 0, 255);
-			SDL_RenderFillRectF(_renderer, &rect);
-		}
-	}
+	rs->Render();
 
 	SDL_SetRenderDrawColor(_renderer, 255, 255, 255, 255);
 	SDL_RenderPresent(_renderer);
