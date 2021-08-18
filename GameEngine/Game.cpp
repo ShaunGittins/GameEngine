@@ -4,6 +4,7 @@
 #include "NameComponent.h"
 #include "RenderComponent.h"
 #include "TransformComponent.h"
+#include "SpriteComponent.h"
 #include "IComponent.h"
 #include "RenderSystem.h"
 
@@ -26,6 +27,8 @@ Entity* myEntity;
 NameComponent* myNameComponent;
 RenderComponent* myRenderComponent;
 TransformComponent* myTransformComponent;
+
+SDL_Surface* ballBitmapSurface = NULL;
 
 Game::Game(SDL_Window* window) {
 	_window = window;
@@ -66,6 +69,9 @@ void Game::Init()
 	myEntity->AddComponent(new TransformComponent(myInitPos, 0.0f, myInitScale));
 
 	_renderSystem->AddComponentReference(myEntityRenderComponent);
+
+	SDL_Rect mySpriteRect{12, 12, 32, 32};
+	myEntity->AddComponent(new SpriteComponent(_renderer, SDL_LoadBMP("ball.bmp"), mySpriteRect));
 }
 
 void Game::Input() {
@@ -103,6 +109,7 @@ void Game::Update(Uint32 delta_time) {
 void Game::Render() {
 	SDL_RenderClear(_renderer);
 
+	myEntity->GetComponent<SpriteComponent>()->Render(_renderer);
 	_renderSystem->Render();
 
 	SDL_SetRenderDrawColor(_renderer, 255, 255, 255, 255);
