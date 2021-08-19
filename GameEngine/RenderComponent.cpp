@@ -17,12 +17,22 @@ RenderComponent::RenderComponent(SDL_Renderer* renderer, bool visible)
 
 void RenderComponent::Render()
 {
-	if (parent->GetComponent<TransformComponent>()) {
-		TransformComponent* tc = parent->GetComponent<TransformComponent>();
-		SDL_FRect parentRect{ tc->_position._x, tc->_position._y, tc->_scale._x, tc->_scale._y };
+	// By default use parent location as origin point if parent has transformComponent
+	// TODO: Allow optional 0x, 0y scene origin
 
+	float originX = 0.0f;
+	float originY = 0.0f;
+
+	if (parent->GetComponent<TransformComponent>()) {
+		TransformComponent* parentTransform = parent->GetComponent<TransformComponent>();
+		originX = parentTransform->_position._x;
+		originY = parentTransform->_position._y;
+	}
+
+	for (SDL_Rect rect : _rects) {
+		SDL_FRect rectToDraw{ originX + rect.x, originY + rect.y, rect.w, rect.h };
 		SDL_SetRenderDrawColor(_renderer, 255, 0, 0, 255);
-		SDL_RenderFillRectF(_renderer, &parentRect);
+		SDL_RenderFillRectF(_renderer, &rectToDraw);
 	}
 }
 

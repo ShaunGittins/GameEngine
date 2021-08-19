@@ -61,7 +61,10 @@ void Game::Init()
 	}
 
 	RenderComponent* myEntityRenderComponent = new RenderComponent(_renderer);
-	SDL_Rect mySpriteRect{ 12, 12, 32, 32 };
+	SDL_Rect mySpriteRect{ 4, 4, 15, 8 };
+	SDL_Rect mySpriteRect2{ 8, 8, 12, 12 };
+	myEntityRenderComponent->AddRect(mySpriteRect);
+	myEntityRenderComponent->AddRect(mySpriteRect2);
 	myEntityRenderComponent->AddSprite(SDL_LoadBMP("ball.bmp"), mySpriteRect);
 	myEntity->AddComponent(myEntityRenderComponent);
 
@@ -106,7 +109,7 @@ void Game::Update(Uint32 delta_time) {
 
 void Game::Render() {
 	SDL_RenderClear(_renderer);
-
+	
 	_renderSystem->Render();
 
 	SDL_SetRenderDrawColor(_renderer, 255, 255, 255, 255);
