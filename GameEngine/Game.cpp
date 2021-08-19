@@ -4,7 +4,6 @@
 #include "NameComponent.h"
 #include "RenderComponent.h"
 #include "TransformComponent.h"
-#include "SpriteComponent.h"
 #include "IComponent.h"
 #include "RenderSystem.h"
 
@@ -61,7 +60,9 @@ void Game::Init()
 		myEntity->GetComponent<NameComponent>()->PrintNameToConsole();
 	}
 
-	RenderComponent* myEntityRenderComponent = new RenderComponent();
+	RenderComponent* myEntityRenderComponent = new RenderComponent(_renderer);
+	SDL_Rect mySpriteRect{ 12, 12, 32, 32 };
+	myEntityRenderComponent->AddSprite(SDL_LoadBMP("ball.bmp"), mySpriteRect);
 	myEntity->AddComponent(myEntityRenderComponent);
 
 	Vector2 myInitPos = Vector2(250, 150);
@@ -69,9 +70,6 @@ void Game::Init()
 	myEntity->AddComponent(new TransformComponent(myInitPos, 0.0f, myInitScale));
 
 	_renderSystem->AddComponentReference(myEntityRenderComponent);
-
-	SDL_Rect mySpriteRect{12, 12, 32, 32};
-	myEntity->AddComponent(new SpriteComponent(_renderer, SDL_LoadBMP("ball.bmp"), mySpriteRect));
 }
 
 void Game::Input() {
@@ -109,7 +107,6 @@ void Game::Update(Uint32 delta_time) {
 void Game::Render() {
 	SDL_RenderClear(_renderer);
 
-	myEntity->GetComponent<SpriteComponent>()->Render(_renderer);
 	_renderSystem->Render();
 
 	SDL_SetRenderDrawColor(_renderer, 255, 255, 255, 255);

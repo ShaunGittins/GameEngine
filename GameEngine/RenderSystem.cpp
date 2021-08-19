@@ -17,7 +17,7 @@ void RenderSystem::Render()
 {
 	for (RenderComponent* renderComponent : _renderComponents) {
 		if (renderComponent->isVisible) {
-			renderComponent->Render(_renderer);
+			renderComponent->Render();
 		}
 	}
 }

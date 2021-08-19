@@ -24,7 +24,8 @@ SpriteComponent::~SpriteComponent()
 
 void SpriteComponent::Render(SDL_Renderer* renderer)
 {
+	/*
 	if (SDL_RenderCopy(renderer, _ballBitmapTexture, NULL, &_spriteRect) != 0) {
 		cout << "Error with SDL_RenderCopy: " << SDL_GetError() << endl;
-	}
+	}*/
 }

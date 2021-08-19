@@ -1,17 +1,26 @@
 #pragma once
 #include "IComponent.h"
+#include <vector>
 #include <SDL.h>
 
 class RenderComponent : public IComponent
 {
 public:
-	RenderComponent();
-	RenderComponent(bool visible);
+	RenderComponent(SDL_Renderer* renderer);
+	RenderComponent(SDL_Renderer* renderer, bool visible);
 
-	void Render(SDL_Renderer* renderer);
+	void Render();
+
+	void AddSprite(SDL_Surface* surface, SDL_Rect spriteRect);
+	void AddRect(SDL_Rect spriteRect);
 
 	void ToggleVisibility();
 
 	bool isVisible;
+
+private:
+	SDL_Renderer* _renderer;
+	SDL_Texture* _ballBitmapTexture = NULL;
+	std::vector<SDL_Rect> _rects;
 };
 
