@@ -94,19 +94,19 @@ void Game::Input() {
 	}
 }
 
-void Game::Update(Uint32 delta_time) {
+void Game::Update(Uint32 deltaTime) {
 	TransformComponent* tc = myEntity->GetComponent<TransformComponent>();
 	if (controlInput.left) {
-		tc->_position._x -= MOVEMENT_SPEED * delta_time;
+		tc->_position._x -= MOVEMENT_SPEED * deltaTime;
 	}
 	if (controlInput.right) {
-		tc->_position._x += MOVEMENT_SPEED * delta_time;
+		tc->_position._x += MOVEMENT_SPEED * deltaTime;
 	}
 	if (controlInput.up) {
-		tc->_position._y -= MOVEMENT_SPEED * delta_time;
+		tc->_position._y -= MOVEMENT_SPEED * deltaTime;
 	}
 	if (controlInput.down) {
-		tc->_position._y += MOVEMENT_SPEED * delta_time;
+		tc->_position._y += MOVEMENT_SPEED * deltaTime;
 	}
 }
 

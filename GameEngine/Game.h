@@ -8,8 +8,21 @@ public:
 	Game(SDL_Window* window);
 	~Game();
 
+	/**
+	* Process input from devices (e.g. keyboard)
+	*/
 	void Input();
-	void Update(Uint32 delta_time);
+
+	/**
+	* Update the game
+	*
+	* @param deltaTime time since last update loop
+	*/
+	void Update(Uint32 deltaTime);
+
+	/**
+	* Draw everything visible to the screen
+	*/
 	void Render();
 
 	bool _running;
