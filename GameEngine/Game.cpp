@@ -52,7 +52,6 @@ Game::~Game() {
 void Game::Init()
 {
 	myEntity = new Entity();
-	cout << myEntity->_id << endl;
 
 	myEntity->AddComponent(new NameComponent("Steve"));
 
@@ -61,10 +60,11 @@ void Game::Init()
 	}
 
 	RenderComponent* myEntityRenderComponent = new RenderComponent(_renderer);
-	SDL_Rect mySpriteRect{ 4, 4, 15, 8 };
-	SDL_Rect mySpriteRect2{ 8, 8, 12, 12 };
-	myEntityRenderComponent->AddRect(mySpriteRect);
-	myEntityRenderComponent->AddRect(mySpriteRect2);
+	SDL_Rect myRect{ 4, 4, 15, 8 };
+	SDL_Rect myRect2{ 8, 8, 12, 12 };
+	SDL_Rect mySpriteRect{ 32, 32, 32, 48 };
+	myEntityRenderComponent->AddRect(myRect);
+	myEntityRenderComponent->AddRect(myRect2);
 	myEntityRenderComponent->AddSprite(SDL_LoadBMP("ball.bmp"), mySpriteRect);
 	myEntity->AddComponent(myEntityRenderComponent);
 

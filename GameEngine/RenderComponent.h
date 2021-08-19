@@ -1,5 +1,6 @@
 #pragma once
 #include "IComponent.h"
+#include "Sprite.h"
 #include <vector>
 #include <SDL.h>
 
@@ -8,6 +9,7 @@ class RenderComponent : public IComponent
 public:
 	RenderComponent(SDL_Renderer* renderer);
 	RenderComponent(SDL_Renderer* renderer, bool visible);
+	~RenderComponent();
 
 	void Render();
 
@@ -20,7 +22,7 @@ public:
 
 private:
 	SDL_Renderer* _renderer;
-	SDL_Texture* _ballBitmapTexture = NULL;
 	std::vector<SDL_Rect> _rects;
+	std::vector<Sprite*> _sprites;
 };
 

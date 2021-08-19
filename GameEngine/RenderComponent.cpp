@@ -15,6 +15,14 @@ RenderComponent::RenderComponent(SDL_Renderer* renderer, bool visible)
 	isVisible = visible;
 }
 
+RenderComponent::~RenderComponent()
+{
+	for (Sprite* sprite : _sprites) {
+		delete sprite;
+	}
+	_sprites.clear();
+}
+
 void RenderComponent::Render()
 {
 	// By default use parent location as origin point if parent has transformComponent
@@ -29,24 +37,36 @@ void RenderComponent::Render()
 		originY = parentTransform->_position._y;
 	}
 
-	for (SDL_Rect rect : _rects) {
-		SDL_FRect rectToDraw{ originX + rect.x, originY + rect.y, rect.w, rect.h };
+	for (const SDL_Rect &rect : _rects) {
+		SDL_FRect drawRect{ originX + rect.x, originY + rect.y, rect.w, rect.h };
 		SDL_SetRenderDrawColor(_renderer, 255, 0, 0, 255);
-		SDL_RenderFillRectF(_renderer, &rectToDraw);
+		SDL_RenderFillRectF(_renderer, &drawRect);
+	}
+
+	for (Sprite* sprite : _sprites) {
+		SDL_Rect drawRect{ originX + sprite->_rect.x, originY + sprite->_rect.y, sprite->_rect.w, sprite->_rect.h };
+		if (SDL_RenderCopy(_renderer, sprite->_texture, NULL, &drawRect) != 0) {
+			std::cout << "Error with SDL_RenderCopy: " << SDL_GetError() << std::endl;
+		}
 	}
 }
 
 void RenderComponent::AddSprite(SDL_Surface* surface, SDL_Rect spriteRect)
 {
+	Sprite* mySprite{};
+
 	if (surface != nullptr) {
-		_ballBitmapTexture = SDL_CreateTextureFromSurface(_renderer, surface);
+		mySprite = new Sprite(SDL_CreateTextureFromSurface(_renderer, surface), spriteRect);
 	}
 	else {
 		std::cout << "Error with SDL_LoadBMP(): " << SDL_GetError() << std::endl;
 	}
 	SDL_FreeSurface(surface);
 
-	//_spriteRect = spriteRect;
+	
+	if (mySprite != nullptr) {
+		_sprites.push_back(mySprite);
+	}
 }
 
 void RenderComponent::AddRect(SDL_Rect spriteRect)
