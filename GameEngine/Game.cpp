@@ -23,6 +23,7 @@ public:
 ControlInput controlInput;
 
 Entity* myEntity;
+Entity* danielEntity;
 NameComponent* myNameComponent;
 RenderComponent* myRenderComponent;
 TransformComponent* myTransformComponent;
@@ -73,6 +74,8 @@ void Game::Init()
 	myEntity->AddComponent(new TransformComponent(myInitPos, 0.0f, myInitScale));
 
 	_renderSystem->AddComponentReference(myEntityRenderComponent);
+
+	danielEntity = new Entity();
 }
 
 void Game::Input() {

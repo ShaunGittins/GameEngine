@@ -10,8 +10,19 @@ public:
 	Entity() { static uint64_t counter = 0; _id = counter++; }
 	virtual ~Entity();
 
+	/**
+	* Add a component to this entity.
+	*
+	* @param component the component to add
+	*/
 	void AddComponent(IComponent* component);
 
+	/**
+	* Get a component from this entity.
+	*
+	* @param component the type of component to get
+	* @return pointer to accessed component, or NULL if not attached component of type found
+	*/
 	template<class T>
 	T* GetComponent();
 
