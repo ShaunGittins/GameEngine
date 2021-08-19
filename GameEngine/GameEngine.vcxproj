@@ -163,7 +163,6 @@
     <ClCompile Include="RenderComponent.cpp" />
     <ClCompile Include="RenderSystem.cpp" />
     <ClCompile Include="Sprite.cpp" />
-    <ClCompile Include="SpriteComponent.cpp" />
     <ClCompile Include="TransformComponent.cpp" />
     <ClCompile Include="Vector2.cpp" />
   </ItemGroup>
@@ -175,7 +174,6 @@
     <ClInclude Include="RenderComponent.h" />
     <ClInclude Include="RenderSystem.h" />
     <ClInclude Include="Sprite.h" />
-    <ClInclude Include="SpriteComponent.h" />
     <ClInclude Include="TransformComponent.h" />
     <ClInclude Include="Vector2.h" />
   </ItemGroup>
