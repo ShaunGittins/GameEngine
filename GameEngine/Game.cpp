@@ -103,16 +103,16 @@ void Game::Update(Uint32 deltaTime) {
 	Vector2 movementVec = Vector2(0.0f, 0.0f);
 
 	if (controlInput.left) {
-		movementVec += Vector2(-MOVEMENT_SPEED, 0);
+		movementVec += Vector2(-MOVEMENT_SPEED, 0) * deltaTime;
 	}
 	if (controlInput.right) {
-		movementVec += Vector2(MOVEMENT_SPEED, 0);
+		movementVec += Vector2(MOVEMENT_SPEED, 0) * deltaTime;
 	}
 	if (controlInput.up) {
-		movementVec += Vector2(0, -MOVEMENT_SPEED);
+		movementVec += Vector2(0, -MOVEMENT_SPEED) * deltaTime;
 	}
 	if (controlInput.down) {
-		movementVec += Vector2(0, MOVEMENT_SPEED);
+		movementVec += Vector2(0, MOVEMENT_SPEED) * deltaTime;
 	}
 
 	VelocityComponent* myVC = myEntity->GetComponent<VelocityComponent>();
