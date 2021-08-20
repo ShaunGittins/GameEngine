@@ -8,4 +8,6 @@ public:
 
 	float _x;
 	float _y;
+
+	Vector2& operator+=(const Vector2& rhs);
 };
