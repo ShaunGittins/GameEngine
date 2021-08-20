@@ -4,6 +4,7 @@
 #include "NameComponent.h"
 #include "RenderComponent.h"
 #include "TransformComponent.h"
+#include "VelocityComponent.h"
 #include "IComponent.h"
 #include "RenderSystem.h"
 
@@ -36,6 +37,7 @@ Game::Game(SDL_Window* window) {
 	SDL_SetRenderDrawColor(_renderer, 255, 255, 255, 255);
 
 	_renderSystem = new RenderSystem(_renderer);
+	_transformSystem = new TransformSystem();
 
 	_running = true;
 	Init();
@@ -72,8 +74,11 @@ void Game::Init()
 	Vector2 myInitPos = Vector2(250, 150);
 	Vector2 myInitScale = Vector2(48, 48);
 	myEntity->AddComponent(new TransformComponent(myInitPos, 0.0f, myInitScale));
+	VelocityComponent* myVelocityComponent = new VelocityComponent(Vector2(0, 0));
+	myEntity->AddComponent(myVelocityComponent);
 
 	_renderSystem->AddComponentReference(myEntityRenderComponent);
+	_transformSystem->AddComponentReference(myVelocityComponent);
 
 	danielEntity = new Entity();
 }
@@ -95,19 +100,27 @@ void Game::Input() {
 }
 
 void Game::Update(Uint32 deltaTime) {
-	TransformComponent* tc = myEntity->GetComponent<TransformComponent>();
+	Vector2 movementVec = Vector2(0.0f, 0.0f);
+
 	if (controlInput.left) {
-		tc->_position._x -= MOVEMENT_SPEED * deltaTime;
+		movementVec += Vector2(-MOVEMENT_SPEED, 0);
 	}
 	if (controlInput.right) {
-		tc->_position._x += MOVEMENT_SPEED * deltaTime;
+		movementVec += Vector2(MOVEMENT_SPEED, 0);
 	}
 	if (controlInput.up) {
-		tc->_position._y -= MOVEMENT_SPEED * deltaTime;
+		movementVec += Vector2(0, -MOVEMENT_SPEED);
 	}
 	if (controlInput.down) {
-		tc->_position._y += MOVEMENT_SPEED * deltaTime;
+		movementVec += Vector2(0, MOVEMENT_SPEED);
 	}
+
+	VelocityComponent* myVC = myEntity->GetComponent<VelocityComponent>();
+	myVC->_velocity = movementVec;
+
+	//cout << "X: " << myVC->_velocity._x << " Y: " << myVC->_velocity._y << endl;
+
+	_transformSystem->Update();
 }
 
 void Game::Render() {

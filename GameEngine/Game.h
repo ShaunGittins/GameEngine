@@ -1,6 +1,7 @@
 #pragma once
 #include "SDL.h"
 #include "RenderSystem.h"
+#include "TransformSystem.h"
 
 class Game
 {
@@ -33,6 +34,7 @@ private:
 	SDL_Event _event;
 
 	RenderSystem* _renderSystem;
+	TransformSystem* _transformSystem;
 
 	void Init();
 };
