@@ -115,10 +115,7 @@ void Game::Update(Uint32 deltaTime) {
 		movementVec += Vector2(0, MOVEMENT_SPEED) * deltaTime;
 	}
 
-	VelocityComponent* myVC = myEntity->GetComponent<VelocityComponent>();
-	myVC->_velocity = movementVec;
-
-	//cout << "X: " << myVC->_velocity._x << " Y: " << myVC->_velocity._y << endl;
+	myEntity->GetComponent<VelocityComponent>()->_velocity = movementVec;
 
 	_transformSystem->Update();
 }
