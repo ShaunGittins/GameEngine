@@ -7,6 +7,7 @@
 #include "VelocityComponent.h"
 #include "IComponent.h"
 #include "RenderSystem.h"
+#include "CameraComponent.h"
 
 using std::cout;
 using std::endl;
@@ -80,7 +81,9 @@ void Game::Init()
 	_renderSystem->AddComponentReference(myEntityRenderComponent);
 	_transformSystem->AddComponentReference(myVelocityComponent);
 
-	danielEntity = new Entity();
+	int w, h;
+	SDL_GetRendererOutputSize(_renderer, &w, &h);
+	myEntity->AddComponent(new CameraComponent({ 4, 4, w - 8, h - 8 }));
 }
 
 void Game::Input() {
@@ -95,6 +98,9 @@ void Game::Input() {
 		controlInput.right = (!keyboard_state[SDL_SCANCODE_A] && (keyboard_state[SDL_SCANCODE_D]));
 		if (keyboard_state[SDL_SCANCODE_ESCAPE]) {
 			_running = false;
+		}
+		if (keyboard_state[SDL_SCANCODE_Y]) {
+
 		}
 	}
 }
@@ -116,6 +122,8 @@ void Game::Render() {
 	SDL_RenderClear(_renderer);
 	
 	_renderSystem->Render();
+
+	myEntity->GetComponent<CameraComponent>()->DebugDraw(_renderer);
 
 	SDL_SetRenderDrawColor(_renderer, 255, 255, 255, 255);
 	SDL_RenderPresent(_renderer);
