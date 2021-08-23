@@ -1,8 +1,9 @@
 #pragma once
 #include "VelocityComponent.h"
+#include "ISystem.h"
 #include <vector>
 
-class TransformSystem
+class TransformSystem : ISystem
 {
 public:
 	TransformSystem();
@@ -13,6 +14,6 @@ public:
 	void AddComponentReference(VelocityComponent* velocityComponent);
 
 private:
-	std::vector<VelocityComponent*> _velocityComponents;
+	//std::vector<VelocityComponent*> _velocityComponents;
 };
 

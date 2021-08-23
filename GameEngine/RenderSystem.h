@@ -1,9 +1,10 @@
 #pragma once
 #include "RenderComponent.h"
+#include "ISystem.h"
 #include <vector>
 #include <SDL.h>
 
-class RenderSystem
+class RenderSystem : ISystem
 {
 public:
 	RenderSystem(SDL_Renderer* renderer);
@@ -15,6 +16,6 @@ public:
 
 private:
 	SDL_Renderer* _renderer;
-	std::vector<RenderComponent*> _renderComponents;
+	//std::vector<RenderComponent*> _renderComponents;
 };
 

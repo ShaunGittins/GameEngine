@@ -1,6 +1,7 @@
 #include "RenderSystem.h"
 #include <iostream>
 #include <SDL.h>
+
 using std::cout;
 using std::endl;
 
@@ -15,14 +16,16 @@ RenderSystem::~RenderSystem()
 
 void RenderSystem::Render()
 {
-	for (RenderComponent* renderComponent : _renderComponents) {
-		if (renderComponent->isVisible) {
-			renderComponent->Render();
+	for (IComponent* component : _components) {
+		if (RenderComponent* renderComponent = dynamic_cast<RenderComponent*>(component)) {
+			if (renderComponent->isVisible) {
+				renderComponent->Render();
+			}
 		}
 	}
 }
 
 void RenderSystem::AddComponentReference(RenderComponent* renderComponent)
 {
-	_renderComponents.push_back(renderComponent);
+	ISystem::AddComponentReference(renderComponent);
 }
