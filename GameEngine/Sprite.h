@@ -5,9 +5,9 @@
 class Sprite
 {
 public:
-	Sprite(SDL_Texture* texture, SDL_Rect rect);
+	Sprite(SDL_Texture* texture, SDL_FRect rect);
 
 	SDL_Texture* _texture = NULL;
-	SDL_Rect _rect;
+	SDL_FRect _rect;
 };
 

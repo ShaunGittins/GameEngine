@@ -23,7 +23,7 @@ RenderComponent::~RenderComponent()
 	_sprites.clear();
 }
 
-void RenderComponent::Render()
+void RenderComponent::Render(Vector2 cameraPos)
 {
 	// By default use parent location as origin point if parent has transformComponent
 	// TODO: Allow optional 0x, 0y scene origin
@@ -37,21 +37,21 @@ void RenderComponent::Render()
 		originY = parentTransform->_position._y;
 	}
 
-	for (const SDL_Rect &rect : _rects) {
-		SDL_FRect drawRect{ originX + rect.x, originY + rect.y, rect.w, rect.h };
+	for (const SDL_FRect &rect : _rects) {
+		SDL_FRect drawRect{ originX + rect.x - cameraPos._x, originY + rect.y - cameraPos._y, rect.w, rect.h };
 		SDL_SetRenderDrawColor(_renderer, 255, 0, 0, 255);
 		SDL_RenderFillRectF(_renderer, &drawRect);
 	}
 
 	for (Sprite* sprite : _sprites) {
-		SDL_Rect drawRect{ originX + sprite->_rect.x, originY + sprite->_rect.y, sprite->_rect.w, sprite->_rect.h };
-		if (SDL_RenderCopy(_renderer, sprite->_texture, NULL, &drawRect) != 0) {
+		SDL_FRect drawRect{ originX + sprite->_rect.x - cameraPos._x, originY + sprite->_rect.y - cameraPos._y, sprite->_rect.w, sprite->_rect.h };
+		if (SDL_RenderCopyF(_renderer, sprite->_texture, NULL, &drawRect) != 0) {
 			std::cout << "Error with SDL_RenderCopy: " << SDL_GetError() << std::endl;
 		}
 	}
 }
 
-void RenderComponent::AddSprite(SDL_Surface* surface, SDL_Rect spriteRect)
+void RenderComponent::AddSprite(SDL_Surface* surface, SDL_FRect spriteRect)
 {
 	Sprite* mySprite{};
 
@@ -69,9 +69,9 @@ void RenderComponent::AddSprite(SDL_Surface* surface, SDL_Rect spriteRect)
 	}
 }
 
-void RenderComponent::AddRect(SDL_Rect spriteRect)
+void RenderComponent::AddRect(SDL_FRect rect)
 {
-	_rects.push_back(spriteRect);
+	_rects.push_back(rect);
 }
 
 void RenderComponent::ToggleVisibility()

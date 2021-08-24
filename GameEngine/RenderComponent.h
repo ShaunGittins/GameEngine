@@ -3,6 +3,7 @@
 #include "Sprite.h"
 #include <vector>
 #include <SDL.h>
+#include "Vector2.h"
 
 class RenderComponent : public IComponent
 {
@@ -11,10 +12,10 @@ public:
 	RenderComponent(SDL_Renderer* renderer, bool visible);
 	~RenderComponent();
 
-	void Render();
+	void Render(Vector2 cameraPos);
 
-	void AddSprite(SDL_Surface* surface, SDL_Rect spriteRect);
-	void AddRect(SDL_Rect spriteRect);
+	void AddSprite(SDL_Surface* surface, SDL_FRect spriteRect);
+	void AddRect(SDL_FRect spriteRect);
 
 	void ToggleVisibility();
 
@@ -22,7 +23,7 @@ public:
 
 private:
 	SDL_Renderer* _renderer;
-	std::vector<SDL_Rect> _rects;
+	std::vector<SDL_FRect> _rects;
 	std::vector<Sprite*> _sprites;
 };
 
