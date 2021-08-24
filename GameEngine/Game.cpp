@@ -25,8 +25,6 @@ public:
 ControlInput controlInput;
 ControlInput cameraControlInput;
 
-Entity* myEntity;
-Entity* bgEntity;
 NameComponent* myNameComponent;
 RenderComponent* myRenderComponent;
 TransformComponent* myTransformComponent;
@@ -36,6 +34,8 @@ SDL_Surface* ballBitmapSurface = NULL;
 SDL_FRect defaultCameraRect { 0, 0, 928, 793 };
 CameraComponent* defaultCamera = new CameraComponent(defaultCameraRect);
 
+Scene* defaultScene = new Scene();
+
 Game::Game(SDL_Window* window) {
 	_window = window;
 	_renderer = SDL_CreateRenderer(_window, -1, 0);
@@ -44,14 +44,20 @@ Game::Game(SDL_Window* window) {
 	_renderSystem = new RenderSystem(_renderer, defaultCamera);
 	_transformSystem = new TransformSystem();
 
+	_scenes.push_back(defaultScene);
+
 	_running = true;
 	Init();
 }
 
 Game::~Game() {
-	delete myEntity;
-	delete bgEntity;
 	delete _renderSystem;
+	delete _transformSystem;
+
+	for (auto& scene : _scenes) {
+		delete scene;
+	}
+	_scenes.clear();
 
 	SDL_DestroyWindow(_window);
 	SDL_DestroyRenderer(_renderer);
@@ -60,16 +66,16 @@ Game::~Game() {
 
 void Game::Init()
 {
-	bgEntity = new Entity();
+	Entity* bgEntity = new Entity();
 	RenderComponent* bgRenderComponent = new RenderComponent(_renderer);
 	SDL_FRect sceneRect{ 0, 0, 928, 793 };
 	bgRenderComponent->AddSprite(SDL_LoadBMP("Background.bmp"), sceneRect);
 	bgEntity->AddComponent(bgRenderComponent);
 	_renderSystem->AddComponentReference(bgRenderComponent);
 
-	myEntity = new Entity();
+	Entity*myEntity = new Entity();
 
-	myEntity->AddComponent(new NameComponent("Steve"));
+	myEntity->AddComponent(new NameComponent("Player"));
 
 	if (myEntity->GetComponent<NameComponent>()) {
 		myEntity->GetComponent<NameComponent>()->PrintNameToConsole();
@@ -98,6 +104,9 @@ void Game::Init()
 	myEntity->AddComponent(new CameraComponent({ 0.0f, 0.0f, static_cast<float>(w), static_cast<float>(h) }));
 
 	_renderSystem->SetMainCamera(myEntity->GetComponent<CameraComponent>());
+
+	_scenes[0]->AddEntityToScene(bgEntity);
+	_scenes[0]->AddEntityToScene(myEntity);
 }
 
 void Game::Input() {
@@ -128,9 +137,8 @@ void Game::Update(Uint32 deltaTime) {
 	if (controlInput.up) movementVec += Vector2(0, -MOVEMENT_SPEED) * deltaTime;
 	if (controlInput.down) movementVec += Vector2(0, MOVEMENT_SPEED) * deltaTime;
 
-	myEntity->GetComponent<VelocityComponent>()->_velocity = movementVec;
+	_scenes[0]->GetEntityByName("Player")->GetComponent<VelocityComponent>()->_velocity = movementVec;
 
-	Vector2 myEntityPosition = myEntity->GetComponent<TransformComponent>()->_position;
 	if (cameraControlInput.left) _renderSystem->GetMainCamera()->_cameraRect.x -= MOVEMENT_SPEED * deltaTime;
 	if (cameraControlInput.right) _renderSystem->GetMainCamera()->_cameraRect.x += MOVEMENT_SPEED * deltaTime;
 	if (cameraControlInput.up) _renderSystem->GetMainCamera()->_cameraRect.y -= MOVEMENT_SPEED * deltaTime;

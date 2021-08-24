@@ -2,6 +2,8 @@
 #include "SDL.h"
 #include "RenderSystem.h"
 #include "TransformSystem.h"
+#include "Scene.h"
+#include <Vector>
 
 class Game
 {
@@ -32,6 +34,8 @@ private:
 	SDL_Window* _window;
 	SDL_Renderer* _renderer;
 	SDL_Event _event;
+
+	std::vector<Scene*> _scenes;
 
 	RenderSystem* _renderSystem;
 	TransformSystem* _transformSystem;
