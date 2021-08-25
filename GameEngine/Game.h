@@ -1,7 +1,5 @@
 #pragma once
 #include "SDL.h"
-#include "RenderSystem.h"
-#include "TransformSystem.h"
 #include "SceneManager.h"
 #include <Vector>
 
@@ -36,9 +34,6 @@ private:
 	SDL_Event _event;
 
 	SceneManager* _sceneManager;
-
-	RenderSystem* _renderSystem;
-	TransformSystem* _transformSystem;
 
 	void Init();
 };

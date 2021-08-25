@@ -42,17 +42,12 @@ Game::Game(SDL_Window* window) {
 
 	_sceneManager = new SceneManager();
 
-	_renderSystem = new RenderSystem(_renderer, defaultCamera);
-	_transformSystem = new TransformSystem();
-
 	_running = true;
 	Init();
 }
 
 Game::~Game() {
 	delete _sceneManager;
-	delete _renderSystem;
-	delete _transformSystem;
 
 	SDL_DestroyWindow(_window);
 	SDL_DestroyRenderer(_renderer);
@@ -61,49 +56,47 @@ Game::~Game() {
 
 void Game::Init()
 {
-	_sceneManager->AddScene(Scene());
-
-	Entity* bgEntity = new Entity();
-	RenderComponent* bgRenderComponent = new RenderComponent(_renderer);
+	// Simple "background" entity example
+	Entity* background = new Entity();
+	RenderComponent* backgroundRenderComponent = new RenderComponent(_renderer);
 	SDL_FRect sceneRect{ 0, 0, 928, 793 };
-	bgRenderComponent->AddSprite(SDL_LoadBMP("Background.bmp"), sceneRect);
-	bgEntity->AddComponent(bgRenderComponent);
-	_renderSystem->AddComponentReference(bgRenderComponent);
+	backgroundRenderComponent->AddSprite(SDL_LoadBMP("Background.bmp"), sceneRect);
+	background->AddComponent(backgroundRenderComponent);
 
-	Entity*myEntity = new Entity();
+	// Simple "player" entity example
+	Entity* player = new Entity();
 
-	myEntity->AddComponent(new NameComponent("Player"));
+	player->AddComponent(new NameComponent("Player"));
 
-	if (myEntity->GetComponent<NameComponent>()) {
-		myEntity->GetComponent<NameComponent>()->PrintNameToConsole();
-	}
-
-	RenderComponent* myEntityRenderComponent = new RenderComponent(_renderer);
+	RenderComponent* playerRenderComponent = new RenderComponent(_renderer);
 	SDL_FRect myRect{ 4, 4, 15, 8 };
 	SDL_FRect myRect2{ 8, 8, 12, 12 };
 	SDL_FRect mySpriteRect{ 32, 32, 32, 48 };
-	myEntityRenderComponent->AddRect(myRect);
-	myEntityRenderComponent->AddRect(myRect2);
-	myEntityRenderComponent->AddSprite(SDL_LoadBMP("ball.bmp"), mySpriteRect);
-	myEntity->AddComponent(myEntityRenderComponent);
+	playerRenderComponent->AddRect(myRect);
+	playerRenderComponent->AddRect(myRect2);
+	playerRenderComponent->AddSprite(SDL_LoadBMP("ball.bmp"), mySpriteRect);
+	player->AddComponent(playerRenderComponent);
 
 	Vector2 myInitPos = Vector2(250, 150);
 	Vector2 myInitScale = Vector2(48, 48);
-	myEntity->AddComponent(new TransformComponent(myInitPos, 0.0f, myInitScale));
-	VelocityComponent* myVelocityComponent = new VelocityComponent(Vector2(0, 0));
-	myEntity->AddComponent(myVelocityComponent);
-
-	_renderSystem->AddComponentReference(myEntityRenderComponent);
-	_transformSystem->AddComponentReference(myVelocityComponent);
+	player->AddComponent(new TransformComponent(myInitPos, 0.0f, myInitScale));
+	VelocityComponent* playerVelocityComponent = new VelocityComponent(Vector2(0, 0));
+	player->AddComponent(playerVelocityComponent);
 
 	int w, h;
 	SDL_GetRendererOutputSize(_renderer, &w, &h);
-	myEntity->AddComponent(new CameraComponent({ 0.0f, 0.0f, static_cast<float>(w), static_cast<float>(h) }));
+	CameraComponent* defaultCamera = new CameraComponent({ 0.0f, 0.0f, static_cast<float>(w), static_cast<float>(h) });
+	player->AddComponent(defaultCamera);
 
-	_renderSystem->SetMainCamera(myEntity->GetComponent<CameraComponent>());
+	
+	// Create a populate scenes
+	_sceneManager->AddScene(new Scene(_renderer, defaultCamera));
+	_sceneManager->GetCurrentScene()->AddEntityToScene(background);
+	_sceneManager->GetCurrentScene()->AddEntityToScene(player);
 
-	_sceneManager->GetCurrentScene()->AddEntityToScene(bgEntity);
-	_sceneManager->GetCurrentScene()->AddEntityToScene(myEntity);
+	// TODO: Determine what to do if entity with main camera component does not exist in current scene
+	_sceneManager->AddScene(new Scene(_renderer, defaultCamera));
+	_sceneManager->GetScene(1)->AddEntityToScene(player);
 }
 
 void Game::Input() {
@@ -112,17 +105,32 @@ void Game::Input() {
 	SDL_PollEvent(&_event);
 
 	if (_event.type == SDL_KEYDOWN || _event.type == SDL_KEYUP) {
+		// Player movement
 		controlInput.up = (keyboard_state[SDL_SCANCODE_W] && !(keyboard_state[SDL_SCANCODE_S]));
 		controlInput.down = (!keyboard_state[SDL_SCANCODE_W] && (keyboard_state[SDL_SCANCODE_S]));
 		controlInput.left = (keyboard_state[SDL_SCANCODE_A] && !(keyboard_state[SDL_SCANCODE_D]));
 		controlInput.right = (!keyboard_state[SDL_SCANCODE_A] && (keyboard_state[SDL_SCANCODE_D]));
-		if (keyboard_state[SDL_SCANCODE_ESCAPE]) {
-			_running = false;
-		}
+		
+		// Camera movement
 		cameraControlInput.up = (keyboard_state[SDL_SCANCODE_UP] && !(keyboard_state[SDL_SCANCODE_DOWN]));
 		cameraControlInput.down = (!keyboard_state[SDL_SCANCODE_UP] && (keyboard_state[SDL_SCANCODE_DOWN]));
 		cameraControlInput.left = (keyboard_state[SDL_SCANCODE_LEFT] && !(keyboard_state[SDL_SCANCODE_RIGHT]));
 		cameraControlInput.right = (!keyboard_state[SDL_SCANCODE_LEFT] && (keyboard_state[SDL_SCANCODE_RIGHT]));
+
+		// Switch scenes
+		if (keyboard_state[SDL_SCANCODE_Y]) {
+			if (_sceneManager->GetCurrentSceneNumber() == 0) {
+				_sceneManager->SetScene(1);
+			}
+			else {
+				_sceneManager->SetScene(0);
+			}
+		}
+
+		// Quit
+		if (keyboard_state[SDL_SCANCODE_ESCAPE]) {
+			_running = false;
+		}
 	}
 }
 
@@ -134,20 +142,22 @@ void Game::Update(Uint32 deltaTime) {
 	if (controlInput.up) movementVec += Vector2(0, -MOVEMENT_SPEED) * deltaTime;
 	if (controlInput.down) movementVec += Vector2(0, MOVEMENT_SPEED) * deltaTime;
 
-	_sceneManager->GetCurrentScene()->GetEntityByName("Player")->GetComponent<VelocityComponent>()->_velocity = movementVec;
+	Scene* currentScene = _sceneManager->GetCurrentScene();
 
-	if (cameraControlInput.left) _renderSystem->GetMainCamera()->_cameraRect.x -= MOVEMENT_SPEED * deltaTime;
-	if (cameraControlInput.right) _renderSystem->GetMainCamera()->_cameraRect.x += MOVEMENT_SPEED * deltaTime;
-	if (cameraControlInput.up) _renderSystem->GetMainCamera()->_cameraRect.y -= MOVEMENT_SPEED * deltaTime;
-	if (cameraControlInput.down) _renderSystem->GetMainCamera()->_cameraRect.y += MOVEMENT_SPEED * deltaTime;
+	currentScene->GetEntityByName("Player")->GetComponent<VelocityComponent>()->_velocity = movementVec;
 
-	_transformSystem->Update();
+	if (cameraControlInput.left) currentScene->GetMainCamera()->_cameraRect.x -= MOVEMENT_SPEED * deltaTime;
+	if (cameraControlInput.right) currentScene->GetMainCamera()->_cameraRect.x += MOVEMENT_SPEED * deltaTime;
+	if (cameraControlInput.up) currentScene->GetMainCamera()->_cameraRect.y -= MOVEMENT_SPEED * deltaTime;
+	if (cameraControlInput.down) currentScene->GetMainCamera()->_cameraRect.y += MOVEMENT_SPEED * deltaTime;
+
+	currentScene->Update();
 }
 
 void Game::Render() {
 	SDL_RenderClear(_renderer);
 
-	_renderSystem->Render();
+	_sceneManager->GetCurrentScene()->Render();
 
 	SDL_SetRenderDrawColor(_renderer, 255, 255, 255, 255);
 	SDL_RenderPresent(_renderer);

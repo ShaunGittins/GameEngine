@@ -8,9 +8,16 @@ public:
 	SceneManager();
 	~SceneManager();
 
-	void AddScene(Scene scene);
+	void AddScene(Scene* scene);
 	Scene* GetCurrentScene();
+	Scene* GetScene(int sceneNumber);
+	void SetScene(int sceneNumber);
+	int GetCurrentSceneNumber();
+
+	void Update();
+	void Render();
 
 private:
-	std::vector<Scene> _scenes;
+	int _currentScene = 0;
+	std::vector<Scene*> _scenes;
 };

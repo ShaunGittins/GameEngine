@@ -1,13 +1,17 @@
 #include "Scene.h"
 #include "NameComponent.h"
 
-Scene::Scene()
+Scene::Scene(SDL_Renderer* renderer, CameraComponent* mainCamera)
 {
-	
+	_renderSystem = new RenderSystem(renderer, mainCamera);
+	_transformSystem = new TransformSystem();
 }
 
 Scene::~Scene()
 {
+	delete _renderSystem;
+	delete _transformSystem;
+
 	for (auto& entity : _entities) {
 		delete entity;
 	}
@@ -16,6 +20,14 @@ Scene::~Scene()
 
 void Scene::AddEntityToScene(Entity* entity)
 {
+	if (VelocityComponent* velocityComponent = entity->GetComponent<VelocityComponent>()) {
+		_transformSystem->AddComponentReference(velocityComponent);
+	}
+
+	if (RenderComponent* renderComponent = entity->GetComponent<RenderComponent>()) {
+		_renderSystem->AddComponentReference(renderComponent);
+	}
+	
 	_entities.push_back(entity);
 }
 
@@ -41,4 +53,24 @@ Entity* Scene::GetEntityByID(uint64_t id)
 		}
 	}
 	return nullptr;
+}
+
+void Scene::SetMainCamera(CameraComponent* mainCamera)
+{
+	_renderSystem->SetMainCamera(mainCamera);
+}
+
+CameraComponent* Scene::GetMainCamera()
+{
+	return _renderSystem->GetMainCamera();
+}
+
+void Scene::Update()
+{
+	_transformSystem->Update();
+}
+
+void Scene::Render()
+{
+	_renderSystem->Render();
 }
