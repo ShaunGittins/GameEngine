@@ -59,13 +59,11 @@ void Game::Init()
 	// Simple "background" entity example
 	Entity* background = new Entity();
 	RenderComponent* backgroundRenderComponent = new RenderComponent(_renderer);
-	SDL_FRect sceneRect{ 0, 0, 928, 793 };
-	backgroundRenderComponent->AddSprite(SDL_LoadBMP("Background.bmp"), sceneRect);
+	backgroundRenderComponent->AddSprite(SDL_LoadBMP("Background.bmp"), { 0, 0, 928, 793 });
 	background->AddComponent(backgroundRenderComponent);
 
 	// Simple "player" entity example
 	Entity* player = new Entity();
-
 	player->AddComponent(new NameComponent("Player"));
 
 	RenderComponent* playerRenderComponent = new RenderComponent(_renderer);
@@ -77,10 +75,10 @@ void Game::Init()
 	player->AddComponent(new TransformComponent({ 250, 150 }, 0.0f, { 48, 48 }));
 	player->AddComponent(new VelocityComponent(Vector2(0, 0)));
 
+	// Camera to attach to scene/s
 	int w, h;
 	SDL_GetRendererOutputSize(_renderer, &w, &h);
 	CameraComponent* defaultCamera = new CameraComponent({ 0.0f, 0.0f, static_cast<float>(w), static_cast<float>(h) });
-	player->AddComponent(defaultCamera);
 
 	
 	// Create a populate scenes
@@ -90,7 +88,7 @@ void Game::Init()
 
 	// TODO: Determine what to do if entity with main camera component does not exist in current scene
 	_sceneManager->AddScene(new Scene(_renderer, defaultCamera));
-	_sceneManager->GetScene(1)->AddEntityToScene(player);
+	_sceneManager->GetScene(1)->AddEntityToScene(background);
 }
 
 void Game::Input() {
@@ -138,7 +136,9 @@ void Game::Update(Uint32 deltaTime) {
 
 	Scene* currentScene = _sceneManager->GetCurrentScene();
 
-	currentScene->GetEntityByName("Player")->GetComponent<VelocityComponent>()->_velocity = movementVec;
+	if (Entity* player = currentScene->GetEntityByName("Player")) {
+		player->GetComponent<VelocityComponent>()->_velocity = movementVec;
+	}
 
 	if (cameraControlInput.left) currentScene->GetMainCamera()->_cameraRect.x -= MOVEMENT_SPEED * deltaTime;
 	if (cameraControlInput.right) currentScene->GetMainCamera()->_cameraRect.x += MOVEMENT_SPEED * deltaTime;
