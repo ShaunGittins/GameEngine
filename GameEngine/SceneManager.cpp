@@ -6,7 +6,7 @@ SceneManager::SceneManager()
 
 SceneManager::~SceneManager()
 {
-
+	_scenes.clear();
 }
 
 void SceneManager::AddScene(Scene scene)
