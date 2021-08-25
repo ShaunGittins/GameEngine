@@ -4,7 +4,7 @@ An extension of SDL2 library that implements a base entity component system patt
 
 ## Key feature reference / examples
 ### Scenes and SceneManager
-```
+```C++
 // Create a scene and add it to the scene manager
 Scene* scene = new Scene(_renderer, defaultCamera);
 _sceneManager->AddScene(scene);
@@ -20,7 +20,7 @@ _sceneManager->GetCurrentScene()->GetEntityByName("Player");
 ```
 
 ### Entities
-```
+```C++
 // Create an entity
 Entity* player = new Entity();
 
@@ -28,7 +28,7 @@ Entity* player = new Entity();
 player->AddComponent(new NameComponent("Player"));
 ```
 ### Components
-```
+```C++
 // Name component gives the entity a name, which then can be used to identify it, this however is not unique, and it's recommended to use entity _id
 new NameComponent("Player");
 
