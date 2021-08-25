@@ -69,19 +69,13 @@ void Game::Init()
 	player->AddComponent(new NameComponent("Player"));
 
 	RenderComponent* playerRenderComponent = new RenderComponent(_renderer);
-	SDL_FRect myRect{ 4, 4, 15, 8 };
-	SDL_FRect myRect2{ 8, 8, 12, 12 };
-	SDL_FRect mySpriteRect{ 32, 32, 32, 48 };
-	playerRenderComponent->AddRect(myRect);
-	playerRenderComponent->AddRect(myRect2);
-	playerRenderComponent->AddSprite(SDL_LoadBMP("ball.bmp"), mySpriteRect);
+	playerRenderComponent->AddRect({ 4, 4, 15, 8 });
+	playerRenderComponent->AddRect({ 8, 8, 12, 12 });
+	playerRenderComponent->AddSprite(SDL_LoadBMP("ball.bmp"), { 32, 32, 32, 48 });
 	player->AddComponent(playerRenderComponent);
 
-	Vector2 myInitPos = Vector2(250, 150);
-	Vector2 myInitScale = Vector2(48, 48);
-	player->AddComponent(new TransformComponent(myInitPos, 0.0f, myInitScale));
-	VelocityComponent* playerVelocityComponent = new VelocityComponent(Vector2(0, 0));
-	player->AddComponent(playerVelocityComponent);
+	player->AddComponent(new TransformComponent({ 250, 150 }, 0.0f, { 48, 48 }));
+	player->AddComponent(new VelocityComponent(Vector2(0, 0)));
 
 	int w, h;
 	SDL_GetRendererOutputSize(_renderer, &w, &h);
