@@ -8,6 +8,7 @@
 #include "IComponent.h"
 #include "RenderSystem.h"
 #include "CameraComponent.h"
+#include "SceneManager.h"
 
 using std::cout;
 using std::endl;
@@ -34,30 +35,24 @@ SDL_Surface* ballBitmapSurface = NULL;
 SDL_FRect defaultCameraRect { 0, 0, 928, 793 };
 CameraComponent* defaultCamera = new CameraComponent(defaultCameraRect);
 
-Scene* defaultScene = new Scene();
-
 Game::Game(SDL_Window* window) {
 	_window = window;
 	_renderer = SDL_CreateRenderer(_window, -1, 0);
 	SDL_SetRenderDrawColor(_renderer, 255, 255, 255, 255);
 
+	_sceneManager = new SceneManager();
+
 	_renderSystem = new RenderSystem(_renderer, defaultCamera);
 	_transformSystem = new TransformSystem();
-
-	_scenes.push_back(defaultScene);
 
 	_running = true;
 	Init();
 }
 
 Game::~Game() {
+	delete _sceneManager;
 	delete _renderSystem;
 	delete _transformSystem;
-
-	for (auto& scene : _scenes) {
-		delete scene;
-	}
-	_scenes.clear();
 
 	SDL_DestroyWindow(_window);
 	SDL_DestroyRenderer(_renderer);
@@ -66,6 +61,8 @@ Game::~Game() {
 
 void Game::Init()
 {
+	_sceneManager->AddScene(Scene());
+
 	Entity* bgEntity = new Entity();
 	RenderComponent* bgRenderComponent = new RenderComponent(_renderer);
 	SDL_FRect sceneRect{ 0, 0, 928, 793 };
@@ -105,8 +102,8 @@ void Game::Init()
 
 	_renderSystem->SetMainCamera(myEntity->GetComponent<CameraComponent>());
 
-	_scenes[0]->AddEntityToScene(bgEntity);
-	_scenes[0]->AddEntityToScene(myEntity);
+	_sceneManager->GetCurrentScene()->AddEntityToScene(bgEntity);
+	_sceneManager->GetCurrentScene()->AddEntityToScene(myEntity);
 }
 
 void Game::Input() {
@@ -137,7 +134,7 @@ void Game::Update(Uint32 deltaTime) {
 	if (controlInput.up) movementVec += Vector2(0, -MOVEMENT_SPEED) * deltaTime;
 	if (controlInput.down) movementVec += Vector2(0, MOVEMENT_SPEED) * deltaTime;
 
-	_scenes[0]->GetEntityByName("Player")->GetComponent<VelocityComponent>()->_velocity = movementVec;
+	_sceneManager->GetCurrentScene()->GetEntityByName("Player")->GetComponent<VelocityComponent>()->_velocity = movementVec;
 
 	if (cameraControlInput.left) _renderSystem->GetMainCamera()->_cameraRect.x -= MOVEMENT_SPEED * deltaTime;
 	if (cameraControlInput.right) _renderSystem->GetMainCamera()->_cameraRect.x += MOVEMENT_SPEED * deltaTime;
