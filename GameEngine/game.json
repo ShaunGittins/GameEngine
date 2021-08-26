@@ -1,0 +1,69 @@
+{
+	"entities": [{
+			"components": {
+				"name": "Player",
+				"transform:": {
+					"xPosition": 250,
+					"yPosition": 150,
+					"rotation": 0,
+					"xScale": 48,
+					"yScale": 48
+				},
+				"velocity": {
+					"x": 0,
+					"y": 0
+				},
+				"render": {
+					"rectangles": [{
+							"x": 4,
+							"y": 4,
+							"width": 15,
+							"height": 8
+						},
+						{
+							"x": 8,
+							"y": 8,
+							"width": 12,
+							"height": 12
+						}
+					],
+					"sprites": [{
+						"x": 32,
+						"y": 32,
+						"width": 32,
+						"height": 48,
+						"filename": "ball.bmp"
+					}]
+				}
+			}
+		},
+		{
+			"components": {
+				"name": "Background1",
+				"render": {
+					"sprites": [{
+						"x": 0,
+						"y": 0,
+						"width": 928,
+						"height": 793,
+						"filename": "Background.bmp"
+					}]
+				}
+			}
+		},
+		{
+			"components": {
+				"name": "Background2",
+				"render": {
+					"sprites": [{
+						"x": 0,
+						"y": 0,
+						"width": 928,
+						"height": 793,
+						"filename": "Background2.bmp"
+					}]
+				}
+			}
+		}
+	]
+}
