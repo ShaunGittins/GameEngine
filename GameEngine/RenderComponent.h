@@ -21,6 +21,9 @@ public:
 
 	bool isVisible;
 
+	int layer = 0;
+	bool operator< (const RenderComponent& other) const;
+
 private:
 	SDL_Renderer* _renderer;
 	std::vector<SDL_FRect> _rects;

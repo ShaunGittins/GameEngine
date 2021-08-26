@@ -91,6 +91,7 @@ void Game::LoadEntitiesFromJSON(std::string filename)
 
 		if (components.HasMember("render")) {
 			RenderComponent* renderComponent = new RenderComponent(_renderer);
+			renderComponent->layer = components["render"]["layer"].GetInt();
 
 			if (components["render"].HasMember("rectangles")) {
 				const Value& rectangles = components["render"]["rectangles"];

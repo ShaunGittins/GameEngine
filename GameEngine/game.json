@@ -14,6 +14,7 @@
 					"y": 0
 				},
 				"render": {
+					"layer": 0,
 					"rectangles": [{
 							"x": 4,
 							"y": 4,
@@ -41,6 +42,7 @@
 			"components": {
 				"name": "Background1",
 				"render": {
+					"layer": 5,
 					"sprites": [{
 						"x": 0,
 						"y": 0,
