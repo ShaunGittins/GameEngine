@@ -13,8 +13,3 @@ void Entity::AddComponent(IComponent* component)
 	component->parent = this;
 	_components.push_back(component);
 }
-
-bool Entity::operator<(const Entity& other) const
-{
-	return layer < other.layer;
-}
