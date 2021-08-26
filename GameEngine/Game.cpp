@@ -35,15 +35,6 @@ public:
 ControlInput controlInput;
 ControlInput cameraControlInput;
 
-NameComponent* myNameComponent;
-RenderComponent* myRenderComponent;
-TransformComponent* myTransformComponent;
-
-SDL_Surface* ballBitmapSurface = NULL;
-
-SDL_FRect defaultCameraRect { 0, 0, 928, 793 };
-CameraComponent* defaultCamera = new CameraComponent(defaultCameraRect);
-
 Game::Game(SDL_Window* window) {
 	_window = window;
 	_renderer = SDL_CreateRenderer(_window, -1, 0);
@@ -165,6 +156,7 @@ void Game::Input() {
 		cameraControlInput.right = (!keyboard_state[SDL_SCANCODE_LEFT] && (keyboard_state[SDL_SCANCODE_RIGHT]));
 
 		// Switch scenes
+		/*
 		if (keyboard_state[SDL_SCANCODE_Y]) {
 			if (_sceneManager->GetCurrentSceneNumber() == 0) {
 				_sceneManager->SetScene(1);
@@ -173,6 +165,7 @@ void Game::Input() {
 				_sceneManager->SetScene(0);
 			}
 		}
+		*/
 
 		// Quit
 		if (keyboard_state[SDL_SCANCODE_ESCAPE]) {
