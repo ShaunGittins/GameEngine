@@ -26,6 +26,9 @@ public:
 	template<class T>
 	T* GetComponent();
 
+	int layer = 0;
+	bool operator< (const Entity& other) const;
+
 private:
 	std::vector<IComponent*> _components;
 };
