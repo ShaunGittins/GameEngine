@@ -78,8 +78,3 @@ void RenderComponent::ToggleVisibility()
 {
 	isVisible = !isVisible;
 }
-
-bool RenderComponent::operator<(const RenderComponent& other) const
-{
-	return layer < other.layer;
-}
