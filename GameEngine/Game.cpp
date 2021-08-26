@@ -86,9 +86,13 @@ void Game::Init()
 	_sceneManager->GetCurrentScene()->AddEntityToScene(background);
 	_sceneManager->GetCurrentScene()->AddEntityToScene(player);
 
-	// TODO: Determine what to do if entity with main camera component does not exist in current scene
+	// Simple "background" entity example for second scene
+	Entity* background2 = new Entity();
+	RenderComponent* backgroundRenderComponent2 = new RenderComponent(_renderer);
+	backgroundRenderComponent2->AddSprite(SDL_LoadBMP("Background2.bmp"), { 0, 0, 928, 793 });
+	background2->AddComponent(backgroundRenderComponent2);
 	_sceneManager->AddScene(new Scene(_renderer, defaultCamera));
-	_sceneManager->GetScene(1)->AddEntityToScene(background);
+	_sceneManager->GetScene(1)->AddEntityToScene(background2);
 }
 
 void Game::Input() {
