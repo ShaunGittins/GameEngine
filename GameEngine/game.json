@@ -2,7 +2,7 @@
 	"entities": [{
 			"components": {
 				"name": "Player",
-				"transform:": {
+				"transform": {
 					"xPosition": 250,
 					"yPosition": 150,
 					"rotation": 0,
@@ -47,20 +47,6 @@
 						"width": 928,
 						"height": 793,
 						"filename": "Background.bmp"
-					}]
-				}
-			}
-		},
-		{
-			"components": {
-				"name": "Background2",
-				"render": {
-					"sprites": [{
-						"x": 0,
-						"y": 0,
-						"width": 928,
-						"height": 793,
-						"filename": "Background2.bmp"
 					}]
 				}
 			}

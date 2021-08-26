@@ -1,15 +1,24 @@
 #include "Game.h"
-#include <iostream>
+#include "SceneManager.h"
+#include "RenderSystem.h"
 #include "Entity.h"
+
+#include "IComponent.h"
 #include "NameComponent.h"
 #include "RenderComponent.h"
 #include "TransformComponent.h"
 #include "VelocityComponent.h"
-#include "IComponent.h"
-#include "RenderSystem.h"
 #include "CameraComponent.h"
-#include "SceneManager.h"
 
+#include <iostream>
+
+#include <fstream>
+#include <rapidjson/document.h>
+#include <rapidjson/istreamwrapper.h>
+
+using namespace rapidjson;
+
+using std::string;
 using std::cout;
 using std::endl;
 
@@ -56,25 +65,6 @@ Game::~Game() {
 
 void Game::Init()
 {
-	// Simple "background" entity example
-	Entity* background = new Entity();
-	RenderComponent* backgroundRenderComponent = new RenderComponent(_renderer);
-	backgroundRenderComponent->AddSprite(SDL_LoadBMP("Background.bmp"), { 0, 0, 928, 793 });
-	background->AddComponent(backgroundRenderComponent);
-
-	// Simple "player" entity example
-	Entity* player = new Entity();
-	player->AddComponent(new NameComponent("Player"));
-
-	RenderComponent* playerRenderComponent = new RenderComponent(_renderer);
-	playerRenderComponent->AddRect({ 4, 4, 15, 8 });
-	playerRenderComponent->AddRect({ 8, 8, 12, 12 });
-	playerRenderComponent->AddSprite(SDL_LoadBMP("ball.bmp"), { 32, 32, 32, 48 });
-	player->AddComponent(playerRenderComponent);
-
-	player->AddComponent(new TransformComponent({ 250, 150 }, 0.0f, { 48, 48 }));
-	player->AddComponent(new VelocityComponent(Vector2(0, 0)));
-
 	// Camera to attach to scene/s
 	int w, h;
 	SDL_GetRendererOutputSize(_renderer, &w, &h);
@@ -83,16 +73,77 @@ void Game::Init()
 	
 	// Create a populate scenes
 	_sceneManager->AddScene(new Scene(_renderer, defaultCamera));
-	_sceneManager->GetCurrentScene()->AddEntityToScene(background);
-	_sceneManager->GetCurrentScene()->AddEntityToScene(player);
+	LoadEntitiesFromJSON("game.json");
+}
 
-	// Simple "background" entity example for second scene
-	Entity* background2 = new Entity();
-	RenderComponent* backgroundRenderComponent2 = new RenderComponent(_renderer);
-	backgroundRenderComponent2->AddSprite(SDL_LoadBMP("Background2.bmp"), { 0, 0, 928, 793 });
-	background2->AddComponent(backgroundRenderComponent2);
-	_sceneManager->AddScene(new Scene(_renderer, defaultCamera));
-	_sceneManager->GetScene(1)->AddEntityToScene(background2);
+void Game::LoadEntitiesFromJSON(std::string filename)
+{
+	// Load JSON file to document
+	std::ifstream ifs(filename);
+	IStreamWrapper isw(ifs);
+	Document document;
+	document.ParseStream(isw);
+
+	// Load document to entities
+	assert(document.HasMember("entities"));
+	const Value& entities = document["entities"];
+	assert(entities.IsArray());
+
+	for (SizeType i = 0; i < entities.Size(); i++) {
+		Entity* entity = new Entity();
+		const Value& components = entities[i]["components"];
+
+		if (components.HasMember("name")) {
+			string name = components["name"].GetString();
+			entity->AddComponent(new NameComponent(name));
+		}
+
+		if (components.HasMember("render")) {
+			RenderComponent* renderComponent = new RenderComponent(_renderer);
+
+			if (components["render"].HasMember("rectangles")) {
+				const Value& rectangles = components["render"]["rectangles"];
+				for (SizeType j = 0; j < rectangles.Size(); j++) {
+					float x = rectangles[j]["x"].GetFloat();
+					float y = rectangles[j]["y"].GetFloat();
+					float width = rectangles[j]["width"].GetFloat();
+					float height = rectangles[j]["height"].GetFloat();
+					renderComponent->AddRect({ x, y, width, height });
+				}
+			}
+
+			if (components["render"].HasMember("sprites")) {
+				const Value& sprites = components["render"]["sprites"];
+				for (SizeType j = 0; j < sprites.Size(); j++) {
+					float x = sprites[j]["x"].GetFloat();
+					float y = sprites[j]["y"].GetFloat();
+					float width = sprites[j]["width"].GetFloat();
+					float height = sprites[j]["height"].GetFloat();
+					string filename = sprites[j]["filename"].GetString();
+					renderComponent->AddSprite(SDL_LoadBMP(filename.c_str()), { x, y, width, height });
+				}
+			}
+			
+			entity->AddComponent(renderComponent);
+		}
+
+		if (components.HasMember("transform")) {
+			float x = components["transform"]["xPosition"].GetFloat();
+			float y = components["transform"]["yPosition"].GetFloat();
+			float rotation = components["transform"]["rotation"].GetFloat();
+			float xScale = components["transform"]["xScale"].GetFloat();
+			float yScale = components["transform"]["yScale"].GetFloat();
+			entity->AddComponent(new TransformComponent({ x, y }, rotation, { xScale, yScale }));
+		}
+
+		if (components.HasMember("velocity")) {
+			float x = components["velocity"]["x"].GetFloat();
+			float y = components["velocity"]["y"].GetFloat();
+			entity->AddComponent(new VelocityComponent(Vector2(x, y)));
+		}
+
+		_sceneManager->GetCurrentScene()->AddEntityToScene(entity);
+	}
 }
 
 void Game::Input() {
