@@ -4,7 +4,6 @@ Sprite::Sprite(SDL_Texture* texture, SDL_FRect rect, float originX, float origin
 {
 	_texture = texture;
 	_rect = rect;
-	_rotationPoint.x = originX;
-	_rotationPoint.y = originY;
+	_rotationPoint = { originX, originY };
 	_angle = angle;
 }

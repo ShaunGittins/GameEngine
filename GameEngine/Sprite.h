@@ -9,7 +9,7 @@ public:
 
 	SDL_Texture* _texture = NULL;
 	SDL_FRect _rect;
-	SDL_FPoint _rotationPoint = { 0.0f, 0.0f };
-	double _angle = 0.0;
+	SDL_FPoint _rotationPoint;
+	double _angle;
 };
 
