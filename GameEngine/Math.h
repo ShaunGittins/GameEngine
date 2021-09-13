@@ -1,7 +1,7 @@
 #pragma once
 #include "Vector2.h"
 
-static class Math
+namespace Math
 {
     Vector2 velocityTo(float x1, float x2, float y1, float y2) {
         float xDifference = x2 - x1;
