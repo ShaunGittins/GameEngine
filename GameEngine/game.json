@@ -33,7 +33,10 @@
 						"y": 32,
 						"width": 32,
 						"height": 48,
-						"filename": "ball.bmp"
+						"filename": "ball.bmp",
+						"originX": 0,
+						"originY": 0,
+						"angle": 0
 					}]
 				}
 			}
