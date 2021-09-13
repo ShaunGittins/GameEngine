@@ -14,7 +14,7 @@ public:
 
 	void Render(Vector2 cameraPos);
 
-	void AddSprite(SDL_Surface* surface, SDL_FRect spriteRect);
+	void AddSprite(SDL_Surface* surface, SDL_FRect spriteRect, float originX, float originY, double angle);
 	void AddRect(SDL_FRect spriteRect);
 
 	void ToggleVisibility();

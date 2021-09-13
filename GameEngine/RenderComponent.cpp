@@ -45,18 +45,18 @@ void RenderComponent::Render(Vector2 cameraPos)
 
 	for (Sprite* sprite : _sprites) {
 		SDL_FRect drawRect{ originX + sprite->_rect.x - cameraPos._x, originY + sprite->_rect.y - cameraPos._y, sprite->_rect.w, sprite->_rect.h };
-		if (SDL_RenderCopyF(_renderer, sprite->_texture, NULL, &drawRect) != 0) {
+		if (SDL_RenderCopyExF(_renderer, sprite->_texture, NULL, &drawRect, sprite->_angle, &sprite->_rotationPoint, SDL_FLIP_NONE) != 0) {
 			std::cout << "Error with SDL_RenderCopy: " << SDL_GetError() << std::endl;
 		}
 	}
 }
 
-void RenderComponent::AddSprite(SDL_Surface* surface, SDL_FRect spriteRect)
+void RenderComponent::AddSprite(SDL_Surface* surface, SDL_FRect spriteRect, float originX, float originY, double angle)
 {
 	Sprite* mySprite{};
 
 	if (surface != nullptr) {
-		mySprite = new Sprite(SDL_CreateTextureFromSurface(_renderer, surface), spriteRect);
+		mySprite = new Sprite(SDL_CreateTextureFromSurface(_renderer, surface), spriteRect, originX, originY, angle);
 	}
 	else {
 		std::cout << "Error with SDL_LoadBMP(): " << SDL_GetError() << std::endl;

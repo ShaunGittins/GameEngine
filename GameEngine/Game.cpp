@@ -112,7 +112,15 @@ void Game::LoadEntitiesFromJSON(std::string filename)
 					float width = sprites[j]["width"].GetFloat();
 					float height = sprites[j]["height"].GetFloat();
 					string filename = sprites[j]["filename"].GetString();
-					renderComponent->AddSprite(SDL_LoadBMP(filename.c_str()), { x, y, width, height });
+					float originX = 0.0f;
+					float originY = 0.0f;
+					double angle = 0;
+					if (sprites[j].HasMember("originX") && sprites[j].HasMember("originY") && sprites[j].HasMember("angle")) {
+						originX = sprites[j]["originX"].GetFloat();
+						originY = sprites[j]["originY"].GetFloat();
+						angle = sprites[j]["angle"].GetDouble();
+					}
+					renderComponent->AddSprite(SDL_LoadBMP(filename.c_str()), { x, y, width, height }, originX, originY, angle);
 				}
 			}
 			
@@ -173,6 +181,19 @@ void Game::Input() {
 			_running = false;
 		}
 	}
+
+	Scene* currentScene = _sceneManager->GetCurrentScene();
+	if (Entity* player = currentScene->GetEntityByName("Player")) {
+		TransformComponent* tcomp = player->GetComponent<TransformComponent>();
+		cout << "PLAYER x: " << tcomp->_position._x << ", y: " << tcomp->_position._x << "\t";
+	}
+
+	int xMouse = 0, yMouse = 0;
+	if (_event.type == SDL_MOUSEMOTION)
+	{
+		SDL_GetMouseState(&xMouse, &yMouse);
+	}
+	cout << "MOUSE x: " << xMouse << ", y: " << yMouse << endl;
 }
 
 void Game::Update(Uint32 deltaTime) {
