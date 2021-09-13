@@ -19,6 +19,13 @@ Vector2& Vector2::operator+=(const Vector2& rhs)
     return *this;
 }
 
+Vector2& Vector2::operator-=(const Vector2& rhs)
+{
+    this->_x -= rhs._x;
+    this->_y -= rhs._y;
+    return *this;
+}
+
 Vector2& Vector2::operator*(const Uint32& rhs)
 {
     this->_x *= rhs;
