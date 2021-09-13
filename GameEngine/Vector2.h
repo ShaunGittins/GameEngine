@@ -12,5 +12,7 @@ public:
 
 	Vector2& operator+=(const Vector2& rhs);
 	Vector2& operator-=(const Vector2& rhs);
+	Vector2& operator-(const Vector2& rhs);
+	Vector2& operator+(const Vector2& rhs);
 	Vector2& operator*(const Uint32& rhs);
 };

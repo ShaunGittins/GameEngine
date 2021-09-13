@@ -26,6 +26,22 @@ Vector2& Vector2::operator-=(const Vector2& rhs)
     return *this;
 }
 
+Vector2& Vector2::operator-(const Vector2& rhs)
+{
+    Vector2 result;
+    result._x = this->_x - rhs._x;
+    result._x = this->_y - rhs._y;
+    return result;
+}
+
+Vector2& Vector2::operator+(const Vector2& rhs)
+{
+    Vector2 result;
+    result._x = this->_x + rhs._x;
+    result._x = this->_y + rhs._y;
+    return result;
+}
+
 Vector2& Vector2::operator*(const Uint32& rhs)
 {
     this->_x *= rhs;
