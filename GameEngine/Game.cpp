@@ -206,6 +206,7 @@ void Game::Update(Uint32 deltaTime) {
 	if (Entity* player = currentScene->GetEntityByName("Player")) {
 		player->GetComponent<VelocityComponent>()->_velocity = movementVec;
 		rot = Math::angleTo(player->GetComponent<TransformComponent>()->_position, { static_cast<float>(xMouse), static_cast<float>(yMouse) });
+		player->GetComponent<TransformComponent>()->_rotation = rot;
 	}
 
 	if (cameraControlInput.left) currentScene->GetMainCamera()->_cameraRect.x -= MOVEMENT_SPEED * deltaTime;
