@@ -192,7 +192,6 @@ void Game::Input() {
 }
 
 double rot = 0.0f;
-Vector2 velTo = { 0.0f, 0.0f };
 
 void Game::Update(Uint32 deltaTime) {
 	Vector2 movementVec = Vector2(0.0f, 0.0f);
@@ -206,9 +205,7 @@ void Game::Update(Uint32 deltaTime) {
 
 	if (Entity* player = currentScene->GetEntityByName("Player")) {
 		player->GetComponent<VelocityComponent>()->_velocity = movementVec;
-
 		rot = Math::angleTo(player->GetComponent<TransformComponent>()->_position, { static_cast<float>(xMouse), static_cast<float>(yMouse) });
-		velTo = Math::velocityTo(player->GetComponent<TransformComponent>()->_position, { static_cast<float>(xMouse), static_cast<float>(yMouse) });
 	}
 
 	if (cameraControlInput.left) currentScene->GetMainCamera()->_cameraRect.x -= MOVEMENT_SPEED * deltaTime;
