@@ -3,7 +3,6 @@
 #include "RenderSystem.h"
 #include "Entity.h"
 #include "Math.h"
-using namespace Math;
 
 #include "IComponent.h"
 #include "NameComponent.h"
@@ -14,11 +13,7 @@ using namespace Math;
 
 #include <iostream>
 
-#include <fstream>
-#include <rapidjson/document.h>
-#include <rapidjson/istreamwrapper.h>
-
-using namespace rapidjson;
+using namespace Math;
 
 using std::string;
 using std::cout;
@@ -64,90 +59,10 @@ void Game::Init()
 	int w, h;
 	SDL_GetRendererOutputSize(_renderer, &w, &h);
 	CameraComponent* defaultCamera = new CameraComponent({ 0.0f, 0.0f, static_cast<float>(w), static_cast<float>(h) });
-
 	
 	// Create a populate scenes
 	_sceneManager->AddScene(new Scene(_renderer, defaultCamera));
-	LoadEntitiesFromJSON("game.json");
-}
-
-void Game::LoadEntitiesFromJSON(std::string filename)
-{
-	// Load JSON file to document
-	std::ifstream ifs(filename);
-	IStreamWrapper isw(ifs);
-	Document document;
-	document.ParseStream(isw);
-
-	// Load document to entities
-	assert(document.HasMember("entities"));
-	const Value& entities = document["entities"];
-	assert(entities.IsArray());
-
-	for (SizeType i = 0; i < entities.Size(); i++) {
-		Entity* entity = new Entity();
-		const Value& components = entities[i]["components"];
-
-		if (components.HasMember("name")) {
-			string name = components["name"].GetString();
-			entity->AddComponent(new NameComponent(name));
-		}
-
-		if (components.HasMember("render")) {
-			RenderComponent* renderComponent = new RenderComponent(_renderer);
-			renderComponent->layer = components["render"]["layer"].GetInt();
-
-			if (components["render"].HasMember("rectangles")) {
-				const Value& rectangles = components["render"]["rectangles"];
-				for (SizeType j = 0; j < rectangles.Size(); j++) {
-					float x = rectangles[j]["x"].GetFloat();
-					float y = rectangles[j]["y"].GetFloat();
-					float width = rectangles[j]["width"].GetFloat();
-					float height = rectangles[j]["height"].GetFloat();
-					renderComponent->AddRect({ x, y, width, height });
-				}
-			}
-
-			if (components["render"].HasMember("sprites")) {
-				const Value& sprites = components["render"]["sprites"];
-				for (SizeType j = 0; j < sprites.Size(); j++) {
-					float x = sprites[j]["x"].GetFloat();
-					float y = sprites[j]["y"].GetFloat();
-					float width = sprites[j]["width"].GetFloat();
-					float height = sprites[j]["height"].GetFloat();
-					string filename = sprites[j]["filename"].GetString();
-					float originX = 0.0f;
-					float originY = 0.0f;
-					double angle = 0;
-					if (sprites[j].HasMember("originX") && sprites[j].HasMember("originY") && sprites[j].HasMember("angle")) {
-						originX = sprites[j]["originX"].GetFloat();
-						originY = sprites[j]["originY"].GetFloat();
-						angle = sprites[j]["angle"].GetDouble();
-					}
-					renderComponent->AddSprite(SDL_LoadBMP(filename.c_str()), { x, y, width, height }, originX, originY, angle);
-				}
-			}
-			
-			entity->AddComponent(renderComponent);
-		}
-
-		if (components.HasMember("transform")) {
-			float x = components["transform"]["xPosition"].GetFloat();
-			float y = components["transform"]["yPosition"].GetFloat();
-			float rotation = components["transform"]["rotation"].GetFloat();
-			float xScale = components["transform"]["xScale"].GetFloat();
-			float yScale = components["transform"]["yScale"].GetFloat();
-			entity->AddComponent(new TransformComponent({ x, y }, rotation, { xScale, yScale }));
-		}
-
-		if (components.HasMember("velocity")) {
-			float x = components["velocity"]["x"].GetFloat();
-			float y = components["velocity"]["y"].GetFloat();
-			entity->AddComponent(new VelocityComponent(Vector2(x, y)));
-		}
-
-		_sceneManager->GetCurrentScene()->AddEntityToScene(entity);
-	}
+	_sceneManager->GetCurrentScene()->AddEntitiesFromJSON("game.json");
 }
 
 void Game::Input() {
@@ -202,7 +117,7 @@ void Game::Update(Uint32 deltaTime) {
 
 	Scene* currentScene = _sceneManager->GetCurrentScene();
 
-	// TODO: Give camera a transform and velocity component instead of putting code here
+	// TODO: Make camera an entity with a transform and velocity component instead of putting code here
 	CameraComponent* cam = currentScene->GetMainCamera();
 	Vector2 cameraVelocity = { 0.0f, 0.0f };
 

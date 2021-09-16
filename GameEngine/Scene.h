@@ -7,6 +7,13 @@
 #include "RenderSystem.h"
 #include "TransformSystem.h"
 
+#include <fstream>
+#include <rapidjson/document.h>
+#include <rapidjson/istreamwrapper.h>
+
+using namespace rapidjson;
+using std::string;
+
 class Scene
 {
 public:
@@ -14,6 +21,8 @@ public:
 	~Scene();
 
 	void AddEntityToScene(Entity* entity);
+	void AddEntitiesFromJSON(std::string filename);
+
 	Entity* GetEntityByName(std::string name);
 	Entity* GetEntityByID(uint64_t id);
 

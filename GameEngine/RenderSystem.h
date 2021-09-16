@@ -15,8 +15,9 @@ public:
 
 	CameraComponent* GetMainCamera();
 	void SetMainCamera(CameraComponent* camera);
-
 	void AddComponentReference(RenderComponent* renderComponent);
+
+	SDL_Renderer* GetRenderer();
 
 private:
 	SDL_Renderer* _renderer;

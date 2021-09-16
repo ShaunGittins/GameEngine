@@ -1,7 +1,9 @@
 #include "RenderSystem.h"
-#include <iostream>
-#include <SDL.h>
 #include "Vector2.h"
+#include "Entity.h"
+
+#include <SDL.h>
+#include <iostream>
 #include <vector>
 #include <algorithm>
 
@@ -17,8 +19,6 @@ RenderSystem::RenderSystem(SDL_Renderer* renderer, CameraComponent* camera)
 RenderSystem::~RenderSystem()
 {
 }
-
-#include "Entity.h"
 
 void RenderSystem::Render()
 {
@@ -54,4 +54,9 @@ void RenderSystem::SetMainCamera(CameraComponent* camera)
 void RenderSystem::AddComponentReference(RenderComponent* renderComponent)
 {
 	ISystem::AddComponentReference(renderComponent);
+}
+
+SDL_Renderer* RenderSystem::GetRenderer()
+{
+	return _renderer;
 }
