@@ -24,7 +24,8 @@ using std::string;
 using std::cout;
 using std::endl;
 
-const float MOVEMENT_SPEED = 0.5f;
+const float PLAYER_MOVEMENT_SPEED = 0.5f;
+const float CAMERA_MOVEMENT_SPEED = 0.3f;
 
 int xMouse = 0, yMouse = 0;
 class ControlInput {
@@ -194,23 +195,35 @@ void Game::Input() {
 void Game::Update(Uint32 deltaTime) {
 	Vector2 movementVec = Vector2(0.0f, 0.0f);
 
-	if (controlInput.left) movementVec += Vector2(-MOVEMENT_SPEED, 0) * deltaTime;
-	if (controlInput.right) movementVec += Vector2(MOVEMENT_SPEED, 0) * deltaTime;
-	if (controlInput.up) movementVec += Vector2(0, -MOVEMENT_SPEED) * deltaTime;
-	if (controlInput.down) movementVec += Vector2(0, MOVEMENT_SPEED) * deltaTime;
+	if (controlInput.left) movementVec += Vector2(-PLAYER_MOVEMENT_SPEED, 0) * deltaTime;
+	if (controlInput.right) movementVec += Vector2(PLAYER_MOVEMENT_SPEED, 0) * deltaTime;
+	if (controlInput.up) movementVec += Vector2(0, -PLAYER_MOVEMENT_SPEED) * deltaTime;
+	if (controlInput.down) movementVec += Vector2(0, PLAYER_MOVEMENT_SPEED) * deltaTime;
 
 	Scene* currentScene = _sceneManager->GetCurrentScene();
 
+	// TODO: Give camera a transform and velocity component instead of putting code here
+	CameraComponent* cam = currentScene->GetMainCamera();
+	Vector2 cameraVelocity = { 0.0f, 0.0f };
+
 	if (Entity* player = currentScene->GetEntityByName("Player")) {
+		// Player velocity
 		player->GetComponent<VelocityComponent>()->_velocity = movementVec;
+
+		// Player rotation
 		Vector2 mouseWorldPos = currentScene->CameraToWorldPosition({ static_cast<float>(xMouse), static_cast<float>(yMouse) });
-		player->GetComponent<TransformComponent>()->_rotation = Math::angleTo(player->GetComponent<TransformComponent>()->_position, mouseWorldPos);
+		TransformComponent* playerTransform = player->GetComponent<TransformComponent>();
+		playerTransform->_rotation = Math::angleTo(player->GetComponent<TransformComponent>()->_position, mouseWorldPos);
+
+		// Camera follow player
+		Vector2 cameraPos = { cam->_cameraRect.x + (cam->_cameraRect.w / 2), cam->_cameraRect.y + (cam->_cameraRect.h / 2) };
+		if (Math::distance(cameraPos, playerTransform->_position) > 30) {
+			cameraVelocity = Math::velocityTo(cameraPos, playerTransform->_position);
+		}
 	}
 
-	if (cameraControlInput.left) currentScene->GetMainCamera()->_cameraRect.x -= MOVEMENT_SPEED * deltaTime;
-	if (cameraControlInput.right) currentScene->GetMainCamera()->_cameraRect.x += MOVEMENT_SPEED * deltaTime;
-	if (cameraControlInput.up) currentScene->GetMainCamera()->_cameraRect.y -= MOVEMENT_SPEED * deltaTime;
-	if (cameraControlInput.down) currentScene->GetMainCamera()->_cameraRect.y += MOVEMENT_SPEED * deltaTime;
+	cam->_cameraRect.x += cameraVelocity._x * CAMERA_MOVEMENT_SPEED * deltaTime;
+	cam->_cameraRect.y += cameraVelocity._y * CAMERA_MOVEMENT_SPEED * deltaTime;
 
 	currentScene->Update();
 }
