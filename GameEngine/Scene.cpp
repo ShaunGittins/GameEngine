@@ -65,6 +65,11 @@ CameraComponent* Scene::GetMainCamera()
 	return _renderSystem->GetMainCamera();
 }
 
+Vector2 Scene::CameraToWorldPosition(Vector2 positionInCamera)
+{
+	return { GetMainCamera()->_cameraRect.x + positionInCamera._x, GetMainCamera()->_cameraRect.y + positionInCamera._y };
+}
+
 void Scene::Update()
 {
 	_transformSystem->Update();

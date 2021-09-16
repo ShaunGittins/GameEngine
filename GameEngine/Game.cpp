@@ -191,8 +191,6 @@ void Game::Input() {
 	}
 }
 
-double rot = 0.0f;
-
 void Game::Update(Uint32 deltaTime) {
 	Vector2 movementVec = Vector2(0.0f, 0.0f);
 
@@ -205,8 +203,8 @@ void Game::Update(Uint32 deltaTime) {
 
 	if (Entity* player = currentScene->GetEntityByName("Player")) {
 		player->GetComponent<VelocityComponent>()->_velocity = movementVec;
-		rot = Math::angleTo(player->GetComponent<TransformComponent>()->_position, { static_cast<float>(xMouse), static_cast<float>(yMouse) });
-		player->GetComponent<TransformComponent>()->_rotation = rot;
+		Vector2 mouseWorldPos = currentScene->CameraToWorldPosition({ static_cast<float>(xMouse), static_cast<float>(yMouse) });
+		player->GetComponent<TransformComponent>()->_rotation = Math::angleTo(player->GetComponent<TransformComponent>()->_position, mouseWorldPos);
 	}
 
 	if (cameraControlInput.left) currentScene->GetMainCamera()->_cameraRect.x -= MOVEMENT_SPEED * deltaTime;
@@ -219,8 +217,6 @@ void Game::Update(Uint32 deltaTime) {
 
 void Game::Render() {
 	SDL_RenderClear(_renderer);
-
-	cout << "Angle: " << rot << endl;
 	_sceneManager->GetCurrentScene()->Render();
 
 	SDL_SetRenderDrawColor(_renderer, 255, 255, 255, 255);

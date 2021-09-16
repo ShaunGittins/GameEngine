@@ -20,6 +20,8 @@ public:
 	void SetMainCamera(CameraComponent* mainCamera);
 	CameraComponent* GetMainCamera();
 
+	Vector2 CameraToWorldPosition(Vector2 positionInCamera);
+
 	void Update();
 	void Render();
 
