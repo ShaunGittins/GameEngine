@@ -12,6 +12,13 @@ Vector2::Vector2(float x, float y)
     _y = y;
 }
 
+
+
+bool Vector2::operator==(const Vector2& rhs)
+{
+    return this->_x == rhs._x && this->_y == rhs._y;
+}
+
 Vector2& Vector2::operator+=(const Vector2& rhs)
 {
     this->_x += rhs._x;

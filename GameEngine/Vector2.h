@@ -10,6 +10,7 @@ public:
 	float _x;
 	float _y;
 
+	bool operator==(const Vector2& rhs);
 	Vector2& operator+=(const Vector2& rhs);
 	Vector2& operator-=(const Vector2& rhs);
 	Vector2& operator-(const Vector2& rhs);
