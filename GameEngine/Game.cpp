@@ -2,6 +2,8 @@
 #include "SceneManager.h"
 #include "RenderSystem.h"
 #include "Entity.h"
+#include "Math.h"
+using namespace Math;
 
 #include "IComponent.h"
 #include "NameComponent.h"
@@ -24,6 +26,7 @@ using std::endl;
 
 const float MOVEMENT_SPEED = 0.5f;
 
+int xMouse = 0, yMouse = 0;
 class ControlInput {
 public:
 	bool left = false;
@@ -182,19 +185,14 @@ void Game::Input() {
 		}
 	}
 
-	Scene* currentScene = _sceneManager->GetCurrentScene();
-	if (Entity* player = currentScene->GetEntityByName("Player")) {
-		TransformComponent* tcomp = player->GetComponent<TransformComponent>();
-		cout << "PLAYER x: " << tcomp->_position._x << ", y: " << tcomp->_position._x << "\t";
-	}
-
-	int xMouse = 0, yMouse = 0;
 	if (_event.type == SDL_MOUSEMOTION)
 	{
 		SDL_GetMouseState(&xMouse, &yMouse);
 	}
-	cout << "MOUSE x: " << xMouse << ", y: " << yMouse << endl;
 }
+
+double rot = 0.0f;
+Vector2 velTo = { 0.0f, 0.0f };
 
 void Game::Update(Uint32 deltaTime) {
 	Vector2 movementVec = Vector2(0.0f, 0.0f);
@@ -208,6 +206,9 @@ void Game::Update(Uint32 deltaTime) {
 
 	if (Entity* player = currentScene->GetEntityByName("Player")) {
 		player->GetComponent<VelocityComponent>()->_velocity = movementVec;
+
+		rot = Math::angleTo(player->GetComponent<TransformComponent>()->_position, { static_cast<float>(xMouse), static_cast<float>(yMouse) });
+		velTo = Math::velocityTo(player->GetComponent<TransformComponent>()->_position, { static_cast<float>(xMouse), static_cast<float>(yMouse) });
 	}
 
 	if (cameraControlInput.left) currentScene->GetMainCamera()->_cameraRect.x -= MOVEMENT_SPEED * deltaTime;
@@ -221,6 +222,7 @@ void Game::Update(Uint32 deltaTime) {
 void Game::Render() {
 	SDL_RenderClear(_renderer);
 
+	cout << "Angle: " << rot << endl;
 	_sceneManager->GetCurrentScene()->Render();
 
 	SDL_SetRenderDrawColor(_renderer, 255, 255, 255, 255);

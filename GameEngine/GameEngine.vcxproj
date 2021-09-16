@@ -183,6 +183,7 @@
     <ClInclude Include="Game.h" />
     <ClInclude Include="IComponent.h" />
     <ClInclude Include="ISystem.h" />
+    <ClInclude Include="Math.h" />
     <ClInclude Include="NameComponent.h" />
     <ClInclude Include="RectColliderComponent.h" />
     <ClInclude Include="RenderComponent.h" />
