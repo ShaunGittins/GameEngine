@@ -3,7 +3,7 @@
   <h3 align="center">Game Engine</h3>
 </div>
 
-# About
+## About
 
 An extension of SDL2 library that implements a base entity component system pattern and a few other basic common game functionality.
 For learning purposes, at the moment.
@@ -16,7 +16,26 @@ For learning purposes, at the moment.
 * Frame cap + time delta for updates
 
 
-# Code examples
+## How to
+
+### Installation
+
+1. Clone the repo
+   ```sh
+   git clone https://github.com/ShaunGittins/GameEngine.git
+   ```
+2. Download SDL2 headers and dev libraries (Windows, Visual Studio Community)
+   https://libsdl.org/download-2.0.php
+   
+3. Add include and library directories
+   * Solution Explorer -> Right-Click GameEngine -> Properties -> Configuration Properties -> VC++ Directories
+   * Edit Include Directories and add SDL2/include directory from download
+   * Edit Library Directories and add SDL2/lib/x86 directory from download
+   
+4. Let compiler find functions.
+   * Solution Explorer -> Right-Click GameEngine -> Properties -> Configuration Properties -> Linker -> Input
+   * Edit Additional Dependencies. Add SDL2.lib; SDL2main.lib;
+   
 
 ### Scenes and SceneManager
 ```C++
@@ -78,7 +97,7 @@ The RenderSystem also dictates the order of which things are drawn, and also hol
 TransformComponents and VelocityComponents are sent to the TransformSystem. Entities with both transform and velocity components will be affected by the TransformSystem each update when the velocity component values are non-zero.
 
 
-# Other
+## Other
 
 ### Future features
 * OpenGL or an alternative rather than default SDL renderer so that shaders can be implemented
