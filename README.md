@@ -1,8 +1,23 @@
-# GameEngine (WIP)
-## Description
-An extension of SDL2 library that implements a base entity component system pattern and a few other basic common game functionality.
+<br />
+<div align="center">
+  <h3 align="center">Game Engine</h3>
+</div>
 
-## Key feature reference / examples
+# About
+
+An extension of SDL2 library that implements a base entity component system pattern and a few other basic common game functionality.
+For learning purposes, at the moment.
+
+### Key Features
+* Design and load entities with preattached components from JSON
+* 2D Transform / Velocity components, and basic Vector2D math functions
+* Render component that can render multiple primitive shapes or sprites, with layers to define render order
+* Viewport / camera offset
+* Frame cap + time delta for updates
+
+
+# Code examples
+
 ### Scenes and SceneManager
 ```C++
 // Create a scene and add it to the scene manager
@@ -61,3 +76,19 @@ For example RenderComponents will be sent to the the scene's RenderSystem. And w
 The RenderSystem also dictates the order of which things are drawn, and also holds onto a "main camera", which offsets where everything is drawn in relation to the camera position.
 
 TransformComponents and VelocityComponents are sent to the TransformSystem. Entities with both transform and velocity components will be affected by the TransformSystem each update when the velocity component values are non-zero.
+
+
+# Other
+
+### Future features
+* OpenGL or an alternative rather than default SDL renderer so that shaders can be implemented
+* Code component to extend entity functionality
+* Message / Event system (and then collision)
+* IMGUI
+* More primitives (circles, triangles)
+* UUID
+* CMake
+* Audio system and components
+* Load more file types for sprites
+* Improve input system
+* Text / Font
