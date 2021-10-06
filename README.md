@@ -1,4 +1,4 @@
-# GameEngine
+# GameEngine (WIP)
 ## Description
 An extension of SDL2 library that implements a base entity component system pattern and a few other basic common game functionality.
 
