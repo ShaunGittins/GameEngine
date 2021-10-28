@@ -36,6 +36,5 @@ private:
 	SceneManager* _sceneManager;
 
 	void Init();
-	void LoadEntitiesFromJSON(std::string filename);
 };
 
