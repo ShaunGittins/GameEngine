@@ -58,16 +58,17 @@ void Game::Init()
 	// Camera to attach to scene/s
 	int w, h;
 	SDL_GetRendererOutputSize(_renderer, &w, &h);
-	CameraComponent* defaultCamera = new CameraComponent({ 0.0f, 0.0f, static_cast<float>(w), static_cast<float>(h) });
+	CameraComponent* camera1 = new CameraComponent({ 0.0f, 0.0f, static_cast<float>(w), static_cast<float>(h) });
+	CameraComponent* camera2 = new CameraComponent({ 0.0f, 0.0f, static_cast<float>(w), static_cast<float>(h) });
 	
 	// Scenes:
 	// 1. Default
-	Scene* defaultScene = new Scene(_renderer, defaultCamera);
+	Scene* defaultScene = new Scene(_renderer, camera1);
 	defaultScene->AddEntitiesFromJSON("defaultScene.json");
 	_sceneManager->AddScene(defaultScene);
 
 	// 2. Testing
-	Scene* testingScene = new Scene(_renderer, defaultCamera);
+	Scene* testingScene = new Scene(_renderer, camera2);
 	testingScene->AddEntitiesFromJSON("testingScene.json");
 	_sceneManager->AddScene(testingScene);
 }
