@@ -63,6 +63,21 @@ void Game::Init()
 	// Create a populate scenes
 	_sceneManager->AddScene(new Scene(_renderer, defaultCamera));
 	_sceneManager->GetCurrentScene()->AddEntitiesFromJSON("game.json");
+
+	// Testing second scene
+	_sceneManager->AddScene(new Scene(_renderer, defaultCamera));
+	Entity* defaultPlayer = new Entity();
+
+	defaultPlayer->AddComponent(new NameComponent("Player"));
+
+	RenderComponent* defaultPlayerRenderComponent = new RenderComponent(_renderer);
+	defaultPlayerRenderComponent->AddRect({ 10, 10, 20, 20 });
+	defaultPlayer->AddComponent(defaultPlayerRenderComponent);
+
+	TransformComponent* defaultPlayerTransformComponent = new TransformComponent({ 250, 150 }, 0.0f, { 48, 48 });
+	defaultPlayer->AddComponent(defaultPlayerTransformComponent);
+
+	_sceneManager->GetScene(1)->AddEntityToScene(defaultPlayer);
 }
 
 void Game::Input() {
@@ -84,7 +99,6 @@ void Game::Input() {
 		cameraControlInput.right = (!keyboard_state[SDL_SCANCODE_LEFT] && (keyboard_state[SDL_SCANCODE_RIGHT]));
 
 		// Switch scenes
-		/*
 		if (keyboard_state[SDL_SCANCODE_Y]) {
 			if (_sceneManager->GetCurrentSceneNumber() == 0) {
 				_sceneManager->SetScene(1);
@@ -93,7 +107,6 @@ void Game::Input() {
 				_sceneManager->SetScene(0);
 			}
 		}
-		*/
 
 		// Quit
 		if (keyboard_state[SDL_SCANCODE_ESCAPE]) {
@@ -108,37 +121,39 @@ void Game::Input() {
 }
 
 void Game::Update(Uint32 deltaTime) {
-	Vector2 movementVec = Vector2(0.0f, 0.0f);
-
-	if (controlInput.left) movementVec += Vector2(-PLAYER_MOVEMENT_SPEED, 0) * deltaTime;
-	if (controlInput.right) movementVec += Vector2(PLAYER_MOVEMENT_SPEED, 0) * deltaTime;
-	if (controlInput.up) movementVec += Vector2(0, -PLAYER_MOVEMENT_SPEED) * deltaTime;
-	if (controlInput.down) movementVec += Vector2(0, PLAYER_MOVEMENT_SPEED) * deltaTime;
-
 	Scene* currentScene = _sceneManager->GetCurrentScene();
 
-	// TODO: Make camera an entity with a transform and velocity component instead of putting code here
-	CameraComponent* cam = currentScene->GetMainCamera();
-	Vector2 cameraVelocity = { 0.0f, 0.0f };
+	if (currentScene == _sceneManager->GetScene(0)) {
+		Vector2 movementVec = Vector2(0.0f, 0.0f);
 
-	if (Entity* player = currentScene->GetEntityByName("Player")) {
-		// Player velocity
-		player->GetComponent<VelocityComponent>()->_velocity = movementVec;
+		if (controlInput.left) movementVec += Vector2(-PLAYER_MOVEMENT_SPEED, 0) * deltaTime;
+		if (controlInput.right) movementVec += Vector2(PLAYER_MOVEMENT_SPEED, 0) * deltaTime;
+		if (controlInput.up) movementVec += Vector2(0, -PLAYER_MOVEMENT_SPEED) * deltaTime;
+		if (controlInput.down) movementVec += Vector2(0, PLAYER_MOVEMENT_SPEED) * deltaTime;
 
-		// Player rotation
-		Vector2 mouseWorldPos = currentScene->CameraToWorldPosition({ static_cast<float>(xMouse), static_cast<float>(yMouse) });
-		TransformComponent* playerTransform = player->GetComponent<TransformComponent>();
-		playerTransform->_rotation = Math::angleTo(player->GetComponent<TransformComponent>()->_position, mouseWorldPos);
+		// TODO: Make camera an entity with a transform and velocity component instead of putting code here
+		CameraComponent* cam = currentScene->GetMainCamera();
+		Vector2 cameraVelocity = { 0.0f, 0.0f };
 
-		// Camera follow player
-		Vector2 cameraPos = { cam->_cameraRect.x + (cam->_cameraRect.w / 2), cam->_cameraRect.y + (cam->_cameraRect.h / 2) };
-		if (Math::distance(cameraPos, playerTransform->_position) > 30) {
-			cameraVelocity = Math::velocityTo(cameraPos, playerTransform->_position);
+		if (Entity* player = currentScene->GetEntityByName("Player")) {
+			// Player velocity
+			player->GetComponent<VelocityComponent>()->_velocity = movementVec;
+
+			// Player rotation
+			Vector2 mouseWorldPos = currentScene->CameraToWorldPosition({ static_cast<float>(xMouse), static_cast<float>(yMouse) });
+			TransformComponent* playerTransform = player->GetComponent<TransformComponent>();
+			playerTransform->_rotation = Math::angleTo(player->GetComponent<TransformComponent>()->_position, mouseWorldPos);
+
+			// Camera follow player
+			Vector2 cameraPos = { cam->_cameraRect.x + (cam->_cameraRect.w / 2), cam->_cameraRect.y + (cam->_cameraRect.h / 2) };
+			if (Math::distance(cameraPos, playerTransform->_position) > 30) {
+				cameraVelocity = Math::velocityTo(cameraPos, playerTransform->_position);
+			}
 		}
-	}
 
-	cam->_cameraRect.x += cameraVelocity._x * CAMERA_MOVEMENT_SPEED * deltaTime;
-	cam->_cameraRect.y += cameraVelocity._y * CAMERA_MOVEMENT_SPEED * deltaTime;
+		cam->_cameraRect.x += cameraVelocity._x * CAMERA_MOVEMENT_SPEED * deltaTime;
+		cam->_cameraRect.y += cameraVelocity._y * CAMERA_MOVEMENT_SPEED * deltaTime;
+	}
 
 	currentScene->Update();
 }
