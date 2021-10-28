@@ -60,24 +60,16 @@ void Game::Init()
 	SDL_GetRendererOutputSize(_renderer, &w, &h);
 	CameraComponent* defaultCamera = new CameraComponent({ 0.0f, 0.0f, static_cast<float>(w), static_cast<float>(h) });
 	
-	// Create a populate scenes
-	_sceneManager->AddScene(new Scene(_renderer, defaultCamera));
-	_sceneManager->GetCurrentScene()->AddEntitiesFromJSON("game.json");
+	// Scenes:
+	// 1. Default
+	Scene* defaultScene = new Scene(_renderer, defaultCamera);
+	defaultScene->AddEntitiesFromJSON("defaultScene.json");
+	_sceneManager->AddScene(defaultScene);
 
-	// Testing second scene
-	_sceneManager->AddScene(new Scene(_renderer, defaultCamera));
-	Entity* defaultPlayer = new Entity();
-
-	defaultPlayer->AddComponent(new NameComponent("Player"));
-
-	RenderComponent* defaultPlayerRenderComponent = new RenderComponent(_renderer);
-	defaultPlayerRenderComponent->AddRect({ 10, 10, 20, 20 });
-	defaultPlayer->AddComponent(defaultPlayerRenderComponent);
-
-	TransformComponent* defaultPlayerTransformComponent = new TransformComponent({ 250, 150 }, 0.0f, { 48, 48 });
-	defaultPlayer->AddComponent(defaultPlayerTransformComponent);
-
-	_sceneManager->GetScene(1)->AddEntityToScene(defaultPlayer);
+	// 2. Testing
+	Scene* testingScene = new Scene(_renderer, defaultCamera);
+	testingScene->AddEntitiesFromJSON("testingScene.json");
+	_sceneManager->AddScene(testingScene);
 }
 
 void Game::Input() {
@@ -86,17 +78,20 @@ void Game::Input() {
 	SDL_PollEvent(&_event);
 
 	if (_event.type == SDL_KEYDOWN || _event.type == SDL_KEYUP) {
-		// Player movement
-		controlInput.up = (keyboard_state[SDL_SCANCODE_W] && !(keyboard_state[SDL_SCANCODE_S]));
-		controlInput.down = (!keyboard_state[SDL_SCANCODE_W] && (keyboard_state[SDL_SCANCODE_S]));
-		controlInput.left = (keyboard_state[SDL_SCANCODE_A] && !(keyboard_state[SDL_SCANCODE_D]));
-		controlInput.right = (!keyboard_state[SDL_SCANCODE_A] && (keyboard_state[SDL_SCANCODE_D]));
-		
-		// Camera movement
-		cameraControlInput.up = (keyboard_state[SDL_SCANCODE_UP] && !(keyboard_state[SDL_SCANCODE_DOWN]));
-		cameraControlInput.down = (!keyboard_state[SDL_SCANCODE_UP] && (keyboard_state[SDL_SCANCODE_DOWN]));
-		cameraControlInput.left = (keyboard_state[SDL_SCANCODE_LEFT] && !(keyboard_state[SDL_SCANCODE_RIGHT]));
-		cameraControlInput.right = (!keyboard_state[SDL_SCANCODE_LEFT] && (keyboard_state[SDL_SCANCODE_RIGHT]));
+		Scene* currentScene = _sceneManager->GetCurrentScene();
+		if (currentScene == _sceneManager->GetScene(1)) {
+			// Player movement
+			controlInput.up = (keyboard_state[SDL_SCANCODE_W] && !(keyboard_state[SDL_SCANCODE_S]));
+			controlInput.down = (!keyboard_state[SDL_SCANCODE_W] && (keyboard_state[SDL_SCANCODE_S]));
+			controlInput.left = (keyboard_state[SDL_SCANCODE_A] && !(keyboard_state[SDL_SCANCODE_D]));
+			controlInput.right = (!keyboard_state[SDL_SCANCODE_A] && (keyboard_state[SDL_SCANCODE_D]));
+
+			// Camera movement
+			cameraControlInput.up = (keyboard_state[SDL_SCANCODE_UP] && !(keyboard_state[SDL_SCANCODE_DOWN]));
+			cameraControlInput.down = (!keyboard_state[SDL_SCANCODE_UP] && (keyboard_state[SDL_SCANCODE_DOWN]));
+			cameraControlInput.left = (keyboard_state[SDL_SCANCODE_LEFT] && !(keyboard_state[SDL_SCANCODE_RIGHT]));
+			cameraControlInput.right = (!keyboard_state[SDL_SCANCODE_LEFT] && (keyboard_state[SDL_SCANCODE_RIGHT]));
+		}
 
 		// Switch scenes
 		if (keyboard_state[SDL_SCANCODE_Y]) {
@@ -122,8 +117,7 @@ void Game::Input() {
 
 void Game::Update(Uint32 deltaTime) {
 	Scene* currentScene = _sceneManager->GetCurrentScene();
-
-	if (currentScene == _sceneManager->GetScene(0)) {
+	if (currentScene == _sceneManager->GetScene(1)) {
 		Vector2 movementVec = Vector2(0.0f, 0.0f);
 
 		if (controlInput.left) movementVec += Vector2(-PLAYER_MOVEMENT_SPEED, 0) * deltaTime;
