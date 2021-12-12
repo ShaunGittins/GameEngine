@@ -6,7 +6,7 @@
 class Game
 {
 public:
-	Game(SDL_Window* window);
+	Game();
 	~Game();
 
 	/**

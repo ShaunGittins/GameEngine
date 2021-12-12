@@ -8,8 +8,7 @@ int main(int argc, char* args[]) {
 	Uint32 last_step = SDL_GetTicks();
 
 	SDL_Init(SDL_INIT_EVERYTHING);
-	SDL_Window* window = SDL_CreateWindow("Title", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 928, 793, SDL_WINDOW_SHOWN);
-	Game* game = new Game(window);
+	Game* game = new Game();
 
 	while (game->_running) {
 		Uint32 current_step = SDL_GetTicks();
