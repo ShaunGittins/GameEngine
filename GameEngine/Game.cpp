@@ -34,14 +34,14 @@ public:
 ControlInput controlInput;
 ControlInput cameraControlInput;
 
-Game::Game(SDL_Window* window) {
+Game::Game(SDL_Window* window, SDL_Renderer* renderer) {
 	_window = window;
-	_renderer = SDL_CreateRenderer(_window, -1, 0);
+	_renderer = renderer;
+
 	SDL_SetRenderDrawColor(_renderer, 255, 255, 255, 255);
 
 	_sceneManager = new SceneManager();
 
-	_running = true;
 	Init();
 }
 
@@ -106,7 +106,7 @@ void Game::Input() {
 
 		// Quit
 		if (keyboard_state[SDL_SCANCODE_ESCAPE]) {
-			_running = false;
+			running = false;
 		}
 	}
 
