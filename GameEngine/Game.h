@@ -6,7 +6,7 @@
 class Game
 {
 public:
-	Game();
+	Game(SDL_Window* SDL_window, SDL_Renderer* renderer);
 	~Game();
 
 	/**
@@ -26,7 +26,7 @@ public:
 	*/
 	void Render();
 
-	bool _running;
+	bool running = true;
 
 private:
 	SDL_Window* _window;

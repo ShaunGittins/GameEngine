@@ -2,15 +2,21 @@
 #include <SDL.h>
 #include "Game.h"
 
+const int SCREEN_WIDTH = 1200;
+const int SCREEN_HEIGHT = 800;
+
 int main(int argc, char* args[]) {
 	const Uint32 MIN_FPS = 6;
 	Uint32 min_delta_time = 1000 / MIN_FPS;
 	Uint32 last_step = SDL_GetTicks();
 
 	SDL_Init(SDL_INIT_EVERYTHING);
-	Game* game = new Game();
+	SDL_Window* window;
+	SDL_Renderer* renderer;
+	SDL_CreateWindowAndRenderer(1200, 800, SDL_WINDOW_SHOWN, &window, &renderer);
+	Game* game = new Game(window, renderer);
 
-	while (game->_running) {
+	while (game->running) {
 		Uint32 current_step = SDL_GetTicks();
 
 		if (last_step < current_step) {

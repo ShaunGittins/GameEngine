@@ -19,9 +19,6 @@ using std::string;
 using std::cout;
 using std::endl;
 
-const int SCREEN_WIDTH = 1200;
-const int SCREEN_HEIGHT = 800;
-
 const float PLAYER_MOVEMENT_SPEED = 0.5f;
 const float CAMERA_MOVEMENT_SPEED = 0.3f;
 
@@ -37,13 +34,14 @@ public:
 ControlInput controlInput;
 ControlInput cameraControlInput;
 
-Game::Game() {
-	SDL_CreateWindowAndRenderer(SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN, &_window, &_renderer);
+Game::Game(SDL_Window* window, SDL_Renderer* renderer) {
+	_window = window;
+	_renderer = renderer;
+
 	SDL_SetRenderDrawColor(_renderer, 255, 255, 255, 255);
 
 	_sceneManager = new SceneManager();
 
-	_running = true;
 	Init();
 }
 
@@ -108,7 +106,7 @@ void Game::Input() {
 
 		// Quit
 		if (keyboard_state[SDL_SCANCODE_ESCAPE]) {
-			_running = false;
+			running = false;
 		}
 	}
 
