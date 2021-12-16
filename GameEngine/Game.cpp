@@ -14,8 +14,12 @@
 #include <iostream>
 #include <imgui_impl_sdlrenderer.h>
 #include <imgui_impl_sdl.h>
+using namespace std;
 
 using namespace Math;
+
+// IMGUI Testing
+Entity* selectedEntity = nullptr;
 
 using std::string;
 using std::cout;
@@ -134,42 +138,63 @@ void Game::Update(Uint32 deltaTime) {
 
 		ImGui::End();
 
-		Entity* selectedEntity = currentScene->GetEntityByName("Player");
+		ImGui::Begin("Entities");
 
-		static int counter = 0;
-
-		ImGui::Begin("Entity properties");
-
-		string guiSelectedIdentifier = "id: " + std::to_string(selectedEntity->_id);
-
-		if (selectedEntity->GetComponent<NameComponent>()) {
-			guiSelectedIdentifier += " | name: \"" + selectedEntity->GetComponent<NameComponent>()->_name + "\"";
+		ImGui::ListBoxHeader("Entities");
+		for (Entity* entity : currentScene->entities)
+		{
+			string item_name = to_string(entity->_id);
+			if (entity->GetComponent<NameComponent>()) {
+				item_name += " \"" + entity->GetComponent<NameComponent>()->_name + "\"";
+			}
+			bool is_selected = selectedEntity == entity;
+			if (ImGui::Selectable(item_name.c_str(), is_selected))
+			{
+				selectedEntity = entity;
+			}
+			if (is_selected)
+				ImGui::SetItemDefaultFocus();
 		}
-
-		ImGui::Text(guiSelectedIdentifier.c_str());
-
-		if (selectedEntity->GetComponent<RenderComponent>()) {
-			ImGui::Text("Render Component:");
-			ImGui::Checkbox("Visible", &selectedEntity->GetComponent<RenderComponent>()->isVisible);
-			ImGui::SliderInt("Layer", &selectedEntity->GetComponent<RenderComponent>()->layer, 0, 10);
-		}
-
-		if (selectedEntity->GetComponent<TransformComponent>()) {
-			TransformComponent* selectedTransformComponent = selectedEntity->GetComponent<TransformComponent>();
-
-			ImGui::Text("Transform Component:");
-			static float position[2] = { selectedTransformComponent->_position._x, selectedTransformComponent->_position._y };
-			ImGui::DragFloat2("position", position);
-			selectedTransformComponent->_position = Vector2(position[0], position[1]);
-
-			ImGui::DragFloat("rotation", &selectedTransformComponent->_rotation, 1.0f, 0.0f, 360.0f);
-
-			static float scale[2] = { selectedTransformComponent->_scale._x, selectedTransformComponent->_scale._y };
-			ImGui::DragFloat2("scale", scale);
-			selectedTransformComponent->_scale = Vector2(scale[0], scale[1]);
-		}
+		ImGui::ListBoxFooter();
 
 		ImGui::End();
+
+		ImGui::ShowDemoWindow();
+
+		if (selectedEntity != nullptr) {
+			ImGui::Begin("Entity properties");
+
+			string guiSelectedIdentifier = "id: " + to_string(selectedEntity->_id);
+
+			if (selectedEntity->GetComponent<NameComponent>()) {
+				guiSelectedIdentifier += " | name: \"" + selectedEntity->GetComponent<NameComponent>()->_name + "\"";
+			}
+
+			ImGui::Text(guiSelectedIdentifier.c_str());
+
+			if (selectedEntity->GetComponent<RenderComponent>()) {
+				ImGui::Text("Render Component:");
+				ImGui::Checkbox("Visible", &selectedEntity->GetComponent<RenderComponent>()->isVisible);
+				ImGui::SliderInt("Layer", &selectedEntity->GetComponent<RenderComponent>()->layer, 0, 10);
+			}
+
+			if (selectedEntity->GetComponent<TransformComponent>()) {
+				TransformComponent* selectedTransformComponent = selectedEntity->GetComponent<TransformComponent>();
+
+				ImGui::Text("Transform Component:");
+				static float position[2] = { selectedTransformComponent->_position._x, selectedTransformComponent->_position._y };
+				ImGui::DragFloat2("position", position);
+				selectedTransformComponent->_position = Vector2(position[0], position[1]);
+
+				ImGui::DragFloat("rotation", &selectedTransformComponent->_rotation, 1.0f, 0.0f, 360.0f);
+
+				static float scale[2] = { selectedTransformComponent->_scale._x, selectedTransformComponent->_scale._y };
+				ImGui::DragFloat2("scale", scale);
+				selectedTransformComponent->_scale = Vector2(scale[0], scale[1]);
+			}
+
+			ImGui::End();
+		}
 
 		Vector2 movementVec = Vector2(0.0f, 0.0f);
 

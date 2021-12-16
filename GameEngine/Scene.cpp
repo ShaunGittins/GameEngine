@@ -12,10 +12,10 @@ Scene::~Scene()
 	delete _renderSystem;
 	delete _transformSystem;
 
-	for (auto& entity : _entities) {
+	for (auto& entity : entities) {
 		delete entity;
 	}
-	_entities.clear();
+	entities.clear();
 }
 
 void Scene::AddEntityToScene(Entity* entity)
@@ -28,7 +28,7 @@ void Scene::AddEntityToScene(Entity* entity)
 		_renderSystem->AddComponentReference(renderComponent);
 	}
 	
-	_entities.push_back(entity);
+	entities.push_back(entity);
 }
 
 void Scene::AddEntitiesFromJSON(std::string filename)
@@ -113,7 +113,7 @@ void Scene::AddEntitiesFromJSON(std::string filename)
 Entity* Scene::GetEntityByName(std::string name)
 {
 	// TODO: Add unique names
-	for (auto& entity : _entities) {
+	for (auto& entity : entities) {
 		NameComponent* nameComponent = entity->GetComponent<NameComponent>();
 		if (nameComponent) {
 			if (nameComponent->_name == name) {
@@ -126,7 +126,7 @@ Entity* Scene::GetEntityByName(std::string name)
 
 Entity* Scene::GetEntityByID(uint64_t id)
 {
-	for (auto& entity : _entities) {
+	for (auto& entity : entities) {
 		if (entity->_id = id) {
 			return entity;
 		}

@@ -31,10 +31,6 @@ int main(int argc, char* args[]) {
 	ImGui_ImplSDL2_InitForSDLRenderer(window);
 	ImGui_ImplSDLRenderer_Init(renderer);
 
-	bool show_demo_window = true;
-	bool show_another_window = false;
-	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
-
 	while (game->running) {
 		Uint32 current_step = SDL_GetTicks();
 
