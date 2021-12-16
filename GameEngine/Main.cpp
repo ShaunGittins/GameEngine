@@ -1,6 +1,9 @@
 #include <iostream>
 #include <SDL.h>
 #include "Game.h"
+#include "imgui.h"
+#include "imgui_impl_sdl.h"
+#include "imgui_impl_sdlrenderer.h"
 
 const int SCREEN_WIDTH = 1200;
 const int SCREEN_HEIGHT = 800;
@@ -18,6 +21,19 @@ int main(int argc, char* args[]) {
 		return 3;
 	}
 	Game* game = new Game(window, renderer);
+
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO(); (void)io;
+
+	ImGui::StyleColorsDark();
+
+	ImGui_ImplSDL2_InitForSDLRenderer(window);
+	ImGui_ImplSDLRenderer_Init(renderer);
+
+	bool show_demo_window = true;
+	bool show_another_window = false;
+	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
 	while (game->running) {
 		Uint32 current_step = SDL_GetTicks();
@@ -38,6 +54,10 @@ int main(int argc, char* args[]) {
 			SDL_Delay(1);
 		}
 	}
+
+	ImGui_ImplSDLRenderer_Shutdown();
+	ImGui_ImplSDL2_Shutdown();
+	ImGui::DestroyContext();
 
 	delete game;
 	return 0;

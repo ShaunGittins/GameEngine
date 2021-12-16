@@ -12,6 +12,8 @@
 #include "CameraComponent.h"
 
 #include <iostream>
+#include <imgui_impl_sdlrenderer.h>
+#include <imgui_impl_sdl.h>
 
 using namespace Math;
 
@@ -117,6 +119,29 @@ void Game::Input() {
 }
 
 void Game::Update(Uint32 deltaTime) {
+	ImGui_ImplSDLRenderer_NewFrame();
+	ImGui_ImplSDL2_NewFrame(_window);
+	ImGui::NewFrame();
+
+	bool visible = true;
+
+	static float f = 0.0f;
+	static int counter = 0;
+
+	ImGui::Begin("Entity properties");
+	ImGui::Text("Details:");
+	ImGui::Checkbox("Visible", &visible);
+
+	ImGui::SliderFloat("Scale (float)", &f, 0.0f, 1.0f);
+
+	if (ImGui::Button("Button"))
+		counter++;
+	ImGui::SameLine();
+	ImGui::Text("counter = %d", counter);
+
+	ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+	ImGui::End();
+
 	Scene* currentScene = _sceneManager->GetCurrentScene();
 	if (currentScene == _sceneManager->GetScene(1)) {
 		Vector2 movementVec = Vector2(0.0f, 0.0f);
@@ -154,9 +179,10 @@ void Game::Update(Uint32 deltaTime) {
 }
 
 void Game::Render() {
+	ImGui::Render();
 	SDL_RenderClear(_renderer);
 	_sceneManager->GetCurrentScene()->Render();
-
 	SDL_SetRenderDrawColor(_renderer, 255, 255, 255, 255);
+	ImGui_ImplSDLRenderer_RenderDrawData(ImGui::GetDrawData());
 	SDL_RenderPresent(_renderer);
 }
