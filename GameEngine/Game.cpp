@@ -149,7 +149,11 @@ void Game::Update(Uint32 deltaTime) {
 
 		ImGui::Text(guiSelectedIdentifier.c_str());
 
-		ImGui::Checkbox("Visible", &selectedEntity->GetComponent<RenderComponent>()->isVisible);
+		if (selectedEntity->GetComponent<RenderComponent>()) {
+			ImGui::Text("Render Component:");
+			ImGui::Checkbox("Visible", &selectedEntity->GetComponent<RenderComponent>()->isVisible);
+			ImGui::SliderInt("Layer", &selectedEntity->GetComponent<RenderComponent>()->layer, 0, 10);
+		}
 
 		ImGui::SliderFloat("Scale (float)", &f, 0.0f, 1.0f);
 
