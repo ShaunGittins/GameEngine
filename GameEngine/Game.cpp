@@ -136,7 +136,6 @@ void Game::Update(Uint32 deltaTime) {
 
 		Entity* selectedEntity = currentScene->GetEntityByName("Player");
 
-		static float f = 0.0f;
 		static int counter = 0;
 
 		ImGui::Begin("Entity properties");
@@ -155,12 +154,20 @@ void Game::Update(Uint32 deltaTime) {
 			ImGui::SliderInt("Layer", &selectedEntity->GetComponent<RenderComponent>()->layer, 0, 10);
 		}
 
-		ImGui::SliderFloat("Scale (float)", &f, 0.0f, 1.0f);
+		if (selectedEntity->GetComponent<TransformComponent>()) {
+			TransformComponent* selectedTransformComponent = selectedEntity->GetComponent<TransformComponent>();
 
-		if (ImGui::Button("Button"))
-			counter++;
-		ImGui::SameLine();
-		ImGui::Text("counter = %d", counter);
+			ImGui::Text("Transform Component:");
+			static float position[2] = { selectedTransformComponent->_position._x, selectedTransformComponent->_position._y };
+			ImGui::DragFloat2("position", position);
+			selectedTransformComponent->_position = Vector2(position[0], position[1]);
+
+			ImGui::DragFloat("rotation", &selectedTransformComponent->_rotation, 1.0f, 0.0f, 360.0f);
+
+			static float scale[2] = { selectedTransformComponent->_scale._x, selectedTransformComponent->_scale._y };
+			ImGui::DragFloat2("scale", scale);
+			selectedTransformComponent->_scale = Vector2(scale[0], scale[1]);
+		}
 
 		ImGui::End();
 
