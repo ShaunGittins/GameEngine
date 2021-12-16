@@ -116,6 +116,8 @@ void Game::Input() {
 	{
 		SDL_GetMouseState(&xMouse, &yMouse);
 	}
+
+	ImGui_ImplSDL2_ProcessEvent(&_event);
 }
 
 void Game::Update(Uint32 deltaTime) {
@@ -123,27 +125,29 @@ void Game::Update(Uint32 deltaTime) {
 	ImGui_ImplSDL2_NewFrame(_window);
 	ImGui::NewFrame();
 
-	bool visible = true;
-
-	static float f = 0.0f;
-	static int counter = 0;
-
-	ImGui::Begin("Entity properties");
-	ImGui::Text("Details:");
-	ImGui::Checkbox("Visible", &visible);
-
-	ImGui::SliderFloat("Scale (float)", &f, 0.0f, 1.0f);
-
-	if (ImGui::Button("Button"))
-		counter++;
-	ImGui::SameLine();
-	ImGui::Text("counter = %d", counter);
-
-	ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-	ImGui::End();
-
 	Scene* currentScene = _sceneManager->GetCurrentScene();
+	
 	if (currentScene == _sceneManager->GetScene(1)) {
+
+		Entity* currentlySelectedEntity = currentScene->GetEntityByName("Player");
+
+		static float f = 0.0f;
+		static int counter = 0;
+
+		ImGui::Begin("Entity properties");
+		ImGui::Text("Details:");
+		ImGui::Checkbox("Visible", &currentlySelectedEntity->GetComponent<RenderComponent>()->isVisible);
+
+		ImGui::SliderFloat("Scale (float)", &f, 0.0f, 1.0f);
+
+		if (ImGui::Button("Button"))
+			counter++;
+		ImGui::SameLine();
+		ImGui::Text("counter = %d", counter);
+
+		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+		ImGui::End();
+
 		Vector2 movementVec = Vector2(0.0f, 0.0f);
 
 		if (controlInput.left) movementVec += Vector2(-PLAYER_MOVEMENT_SPEED, 0) * deltaTime;
