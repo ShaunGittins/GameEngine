@@ -128,15 +128,28 @@ void Game::Update(Uint32 deltaTime) {
 	Scene* currentScene = _sceneManager->GetCurrentScene();
 	
 	if (currentScene == _sceneManager->GetScene(1)) {
+		ImGui::Begin("General");
 
-		Entity* currentlySelectedEntity = currentScene->GetEntityByName("Player");
+		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+
+		ImGui::End();
+
+		Entity* selectedEntity = currentScene->GetEntityByName("Player");
 
 		static float f = 0.0f;
 		static int counter = 0;
 
 		ImGui::Begin("Entity properties");
-		ImGui::Text("Details:");
-		ImGui::Checkbox("Visible", &currentlySelectedEntity->GetComponent<RenderComponent>()->isVisible);
+
+		string guiSelectedIdentifier = "id: " + std::to_string(selectedEntity->_id);
+
+		if (selectedEntity->GetComponent<NameComponent>()) {
+			guiSelectedIdentifier += " | name: \"" + selectedEntity->GetComponent<NameComponent>()->_name + "\"";
+		}
+
+		ImGui::Text(guiSelectedIdentifier.c_str());
+
+		ImGui::Checkbox("Visible", &selectedEntity->GetComponent<RenderComponent>()->isVisible);
 
 		ImGui::SliderFloat("Scale (float)", &f, 0.0f, 1.0f);
 
@@ -145,7 +158,6 @@ void Game::Update(Uint32 deltaTime) {
 		ImGui::SameLine();
 		ImGui::Text("counter = %d", counter);
 
-		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 		ImGui::End();
 
 		Vector2 movementVec = Vector2(0.0f, 0.0f);
