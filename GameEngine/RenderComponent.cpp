@@ -46,10 +46,8 @@ void RenderComponent::Render(Vector2 cameraPos)
 	}
 
 	for (Sprite* sprite : sprites) {
-		sprite->angle = rotation;
-
 		SDL_FRect drawRect{ originX + sprite->rect.x - cameraPos._x, originY + sprite->rect.y - cameraPos._y, sprite->rect.w, sprite->rect.h };
-		if (SDL_RenderCopyExF(_renderer, sprite->texture, NULL, &drawRect, sprite->angle, NULL, SDL_FLIP_NONE) != 0) {
+		if (SDL_RenderCopyExF(_renderer, sprite->texture, NULL, &drawRect, rotation + sprite->angle, NULL, SDL_FLIP_NONE) != 0) {
 			std::cout << "Error with SDL_RenderCopy: " << SDL_GetError() << std::endl;
 		}
 	}

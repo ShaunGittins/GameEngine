@@ -203,7 +203,8 @@ void Game::Update(Uint32 deltaTime) {
 						static float* pivot[2] = { &mySprite->rotationPoint.x, &mySprite->rotationPoint.y };
 						ImGui::DragFloat2("Pivot point", *(pivot));
 
-						ImGui::DragFloat("Rotation", &mySprite->angle, 1.0f, 0.0f, 360.0f);
+						ImGui::SliderFloat("Angle", &mySprite->angle, -360, 360, "%.0f deg", ImGuiSliderFlags_None);
+						ImGui::Text(to_string(mySprite->angle).c_str());
 					}
 				}
 			}
