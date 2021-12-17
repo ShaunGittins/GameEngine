@@ -144,16 +144,16 @@ void Game::Update(Uint32 deltaTime) {
 		{
 			for (Entity* entity : currentScene->entities)
 			{
-				string item_name = to_string(entity->_id);
+				string entityName = to_string(entity->_id);
 				if (entity->GetComponent<NameComponent>()) {
-					item_name += " \"" + entity->GetComponent<NameComponent>()->_name + "\"";
+					entityName += " \"" + entity->GetComponent<NameComponent>()->_name + "\"";
 				}
-				bool is_selected = selectedEntity == entity;
-				if (ImGui::Selectable(item_name.c_str(), is_selected))
+				bool isSelected = selectedEntity == entity;
+				if (ImGui::Selectable(entityName.c_str(), isSelected))
 				{
 					selectedEntity = entity;
 				}
-				if (is_selected)
+				if (isSelected)
 					ImGui::SetItemDefaultFocus();
 			}
 			ImGui::ListBoxFooter();
@@ -166,6 +166,8 @@ void Game::Update(Uint32 deltaTime) {
 		if (selectedEntity != nullptr) {
 			ImGui::Begin("Entity properties");
 
+
+			// GUI Component ID / Name
 			string guiSelectedIdentifier = "id: " + to_string(selectedEntity->_id);
 
 			if (selectedEntity->GetComponent<NameComponent>()) {
@@ -174,25 +176,48 @@ void Game::Update(Uint32 deltaTime) {
 
 			ImGui::Text(guiSelectedIdentifier.c_str());
 
-			if (selectedEntity->GetComponent<RenderComponent>()) {
+			// GUI Component Render
+
+			if (RenderComponent* rc = selectedEntity->GetComponent<RenderComponent>()) {
 				ImGui::Text("Render Component:");
-				ImGui::Checkbox("Visible", &selectedEntity->GetComponent<RenderComponent>()->isVisible);
-				ImGui::SliderInt("Layer", &selectedEntity->GetComponent<RenderComponent>()->layer, 0, 10);
+				ImGui::Checkbox("Visible", &rc->isVisible);
+				ImGui::SliderInt("Layer", &rc->layer, 0, 10);
+
+				if (rc->rects.size() > 0) {
+					ImGui::Text("Primitives: ");
+				}
+
+				// TODO: Rework so one renderComponent = one sprite or primitive?
+				if (rc->sprites.size() > 0) {
+					ImGui::Text("Sprite: ");
+					Sprite* mySprite = *rc->sprites.begin();
+					ImGui::Text(("File name: " + mySprite->filename).c_str());
+
+					static float* position[2] = { &mySprite->rect.x, &mySprite->rect.y };
+					ImGui::DragFloat2("Position relative", *(position));
+
+					static float* scale[2] = { &mySprite->rect.w, &mySprite->rect.h };
+					ImGui::DragFloat2("Size", *(scale));
+
+					static float* pivot[2] = { &mySprite->rotationPoint.x, &mySprite->rotationPoint.y };
+					ImGui::DragFloat2("Pivot point", *(pivot));
+
+					ImGui::DragFloat("Rotation", &mySprite->angle, 1.0f, 0.0f, 360.0f);
+				}
 			}
 
+			// GUI Component Transform
 			if (selectedEntity->GetComponent<TransformComponent>()) {
 				TransformComponent* selectedTransformComponent = selectedEntity->GetComponent<TransformComponent>();
 
 				ImGui::Text("Transform Component:");
-				static float position[2] = { selectedTransformComponent->_position._x, selectedTransformComponent->_position._y };
-				ImGui::DragFloat2("position", position);
-				selectedTransformComponent->_position = Vector2(position[0], position[1]);
+				static float* position[2] = { &selectedTransformComponent->_position._x, &selectedTransformComponent->_position._y };
+				ImGui::DragFloat2("position", *(position));
 
 				ImGui::DragFloat("rotation", &selectedTransformComponent->_rotation, 1.0f, 0.0f, 360.0f);
 
-				static float scale[2] = { selectedTransformComponent->_scale._x, selectedTransformComponent->_scale._y };
-				ImGui::DragFloat2("scale", scale);
-				selectedTransformComponent->_scale = Vector2(scale[0], scale[1]);
+				static float* scale[2] = { &selectedTransformComponent->_scale._x, &selectedTransformComponent->_scale._y };
+				ImGui::DragFloat2("scale", *(scale));
 			}
 
 			ImGui::End();
