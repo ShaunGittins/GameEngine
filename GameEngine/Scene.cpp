@@ -84,7 +84,7 @@ void Scene::AddEntitiesFromJSON(std::string filename)
 						originY = sprites[j]["originY"].GetFloat();
 						angle = sprites[j]["angle"].GetDouble();
 					}
-					renderComponent->AddSprite(SDL_LoadBMP(filename.c_str()), { x, y, width, height }, originX, originY, angle);
+					renderComponent->AddSprite(filename, { x, y, width, height }, originX, originY, angle);
 				}
 			}
 

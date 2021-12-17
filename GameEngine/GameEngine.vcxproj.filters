@@ -60,9 +60,6 @@
     <ClCompile Include="RenderSystem.cpp">
       <Filter>Source Files\Systems</Filter>
     </ClCompile>
-    <ClCompile Include="Sprite.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="VelocityComponent.cpp">
       <Filter>Source Files\Components</Filter>
     </ClCompile>

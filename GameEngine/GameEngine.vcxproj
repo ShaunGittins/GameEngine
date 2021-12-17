@@ -178,7 +178,6 @@
     <ClCompile Include="RenderSystem.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneManager.cpp" />
-    <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="TransformComponent.cpp" />
     <ClCompile Include="TransformSystem.cpp" />
     <ClCompile Include="Vector2.cpp" />

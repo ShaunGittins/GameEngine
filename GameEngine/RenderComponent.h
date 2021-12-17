@@ -4,6 +4,7 @@
 #include <vector>
 #include <SDL.h>
 #include "Vector2.h"
+#include <string>
 
 class RenderComponent : public IComponent
 {
@@ -14,7 +15,7 @@ public:
 
 	void Render(Vector2 cameraPos);
 
-	void AddSprite(SDL_Surface* surface, SDL_FRect spriteRect, float originX, float originY, double angle);
+	void AddSprite(std::string filename, SDL_FRect spriteRect, float originX, float originY, double angle);
 	void AddRect(SDL_FRect spriteRect);
 
 	void ToggleVisibility();
@@ -23,9 +24,10 @@ public:
 
 	int layer = 0;
 
+	std::vector<SDL_FRect> rects;
+	std::vector<Sprite*> sprites;
+
 private:
 	SDL_Renderer* _renderer;
-	std::vector<SDL_FRect> _rects;
-	std::vector<Sprite*> _sprites;
 };
 

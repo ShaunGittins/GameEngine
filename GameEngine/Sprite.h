@@ -1,15 +1,19 @@
 #pragma once
 #include <SDL_rect.h>
 #include <SDL_render.h>
+#include <string>
+
+using std::string;
 
 class Sprite
 {
 public:
-	Sprite(SDL_Texture* texture, SDL_FRect rect, float originX, float originY, double angle);
+	Sprite(string filename, SDL_Texture* texture, SDL_FRect rect, float originX, float originY, float angle): filename(filename), texture(texture), rect(rect), rotationPoint({ originX, originY }), angle(angle) {}
 
-	SDL_Texture* _texture = NULL;
-	SDL_FRect _rect;
-	SDL_FPoint _rotationPoint;
-	double _angle;
+	string filename;
+	SDL_Texture* texture = NULL;
+	SDL_FRect rect;
+	SDL_FPoint rotationPoint;
+	float angle;
 };
 
