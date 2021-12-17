@@ -34,9 +34,8 @@ public:
 	void Update();
 	void Render();
 
+	std::vector<Entity*> entities;
 private:
-	std::vector<Entity*> _entities;
-
 	RenderSystem* _renderSystem;
 	TransformSystem* _transformSystem;
 };

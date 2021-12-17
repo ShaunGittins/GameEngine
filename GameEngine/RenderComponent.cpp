@@ -17,10 +17,10 @@ RenderComponent::RenderComponent(SDL_Renderer* renderer, bool visible)
 
 RenderComponent::~RenderComponent()
 {
-	for (Sprite* sprite : _sprites) {
+	for (Sprite* sprite : sprites) {
 		delete sprite;
 	}
-	_sprites.clear();
+	sprites.clear();
 }
 
 void RenderComponent::Render(Vector2 cameraPos)
@@ -39,28 +39,27 @@ void RenderComponent::Render(Vector2 cameraPos)
 		rotation = -parentTransform->_rotation;
 	}
 
-	for (const SDL_FRect &rect : _rects) {
+	for (const SDL_FRect &rect : rects) {
 		SDL_FRect drawRect{ originX + rect.x - cameraPos._x, originY + rect.y - cameraPos._y, rect.w, rect.h };
 		SDL_SetRenderDrawColor(_renderer, 255, 0, 0, 255);
 		SDL_RenderFillRectF(_renderer, &drawRect);
 	}
 
-	for (Sprite* sprite : _sprites) {
-		sprite->_angle = rotation;
-
-		SDL_FRect drawRect{ originX + sprite->_rect.x - cameraPos._x, originY + sprite->_rect.y - cameraPos._y, sprite->_rect.w, sprite->_rect.h };
-		if (SDL_RenderCopyExF(_renderer, sprite->_texture, NULL, &drawRect, sprite->_angle, NULL, SDL_FLIP_NONE) != 0) {
+	for (Sprite* sprite : sprites) {
+		SDL_FRect drawRect{ originX + sprite->rect.x - cameraPos._x, originY + sprite->rect.y - cameraPos._y, sprite->rect.w, sprite->rect.h };
+		if (SDL_RenderCopyExF(_renderer, sprite->texture, NULL, &drawRect, rotation + sprite->angle, NULL, SDL_FLIP_NONE) != 0) {
 			std::cout << "Error with SDL_RenderCopy: " << SDL_GetError() << std::endl;
 		}
 	}
 }
 
-void RenderComponent::AddSprite(SDL_Surface* surface, SDL_FRect spriteRect, float originX, float originY, double angle)
+void RenderComponent::AddSprite(std::string filename, SDL_FRect spriteRect, float originX, float originY, double angle)
 {
 	Sprite* mySprite{};
+	SDL_Surface* surface = SDL_LoadBMP(filename.c_str());
 
 	if (surface != nullptr) {
-		mySprite = new Sprite(SDL_CreateTextureFromSurface(_renderer, surface), spriteRect, originX, originY, angle);
+		mySprite = new Sprite(filename, SDL_CreateTextureFromSurface(_renderer, surface), spriteRect, originX, originY, angle);
 	}
 	else {
 		std::cout << "Error with SDL_LoadBMP(): " << SDL_GetError() << std::endl;
@@ -69,13 +68,13 @@ void RenderComponent::AddSprite(SDL_Surface* surface, SDL_FRect spriteRect, floa
 
 	
 	if (mySprite != nullptr) {
-		_sprites.push_back(mySprite);
+		sprites.push_back(mySprite);
 	}
 }
 
 void RenderComponent::AddRect(SDL_FRect rect)
 {
-	_rects.push_back(rect);
+	rects.push_back(rect);
 }
 
 void RenderComponent::ToggleVisibility()
