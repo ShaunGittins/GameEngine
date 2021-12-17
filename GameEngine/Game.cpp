@@ -175,49 +175,51 @@ void Game::Update(Uint32 deltaTime) {
 			}
 
 			ImGui::Text(guiSelectedIdentifier.c_str());
+			ImGui::Separator();
+			ImGui::Text("Components:");
 
 			// GUI Component Render
-
 			if (RenderComponent* rc = selectedEntity->GetComponent<RenderComponent>()) {
-				ImGui::Text("Render Component:");
-				ImGui::Checkbox("Visible", &rc->isVisible);
-				ImGui::SliderInt("Layer", &rc->layer, 0, 10);
+				if (ImGui::CollapsingHeader("Render Component")) {
+					ImGui::Checkbox("Visible", &rc->isVisible);
+					ImGui::SliderInt("Layer", &rc->layer, 0, 10);
 
-				if (rc->rects.size() > 0) {
-					ImGui::Text("Primitives: ");
-				}
+					if (rc->rects.size() > 0) {
+						ImGui::Text("Primitives: ");
+					}
 
-				// TODO: Rework so one renderComponent = one sprite or primitive?
-				if (rc->sprites.size() > 0) {
-					ImGui::Text("Sprite: ");
-					Sprite* mySprite = *rc->sprites.begin();
-					ImGui::Text(("File name: " + mySprite->filename).c_str());
+					// TODO: Rework so one renderComponent = one sprite or primitive?
+					if (rc->sprites.size() > 0) {
+						ImGui::Text("Sprite: ");
+						Sprite* mySprite = *rc->sprites.begin();
+						ImGui::Text(("File name: " + mySprite->filename).c_str());
 
-					static float* position[2] = { &mySprite->rect.x, &mySprite->rect.y };
-					ImGui::DragFloat2("Position relative", *(position));
+						static float* position[2] = { &mySprite->rect.x, &mySprite->rect.y };
+						ImGui::DragFloat2("Position relative", *(position));
 
-					static float* scale[2] = { &mySprite->rect.w, &mySprite->rect.h };
-					ImGui::DragFloat2("Size", *(scale));
+						static float* scale[2] = { &mySprite->rect.w, &mySprite->rect.h };
+						ImGui::DragFloat2("Size", *(scale));
 
-					static float* pivot[2] = { &mySprite->rotationPoint.x, &mySprite->rotationPoint.y };
-					ImGui::DragFloat2("Pivot point", *(pivot));
+						static float* pivot[2] = { &mySprite->rotationPoint.x, &mySprite->rotationPoint.y };
+						ImGui::DragFloat2("Pivot point", *(pivot));
 
-					ImGui::DragFloat("Rotation", &mySprite->angle, 1.0f, 0.0f, 360.0f);
+						ImGui::DragFloat("Rotation", &mySprite->angle, 1.0f, 0.0f, 360.0f);
+					}
 				}
 			}
 
 			// GUI Component Transform
-			if (selectedEntity->GetComponent<TransformComponent>()) {
-				TransformComponent* selectedTransformComponent = selectedEntity->GetComponent<TransformComponent>();
+			if (TransformComponent* tc = selectedEntity->GetComponent<TransformComponent>()) {
+				if (ImGui::CollapsingHeader("Transform Component")) {
+					ImGui::Text("Transform Component:");
+					static float* position[2] = { &tc->_position._x, &tc->_position._y };
+					ImGui::DragFloat2("position", *(position));
 
-				ImGui::Text("Transform Component:");
-				static float* position[2] = { &selectedTransformComponent->_position._x, &selectedTransformComponent->_position._y };
-				ImGui::DragFloat2("position", *(position));
+					ImGui::DragFloat("rotation", &tc->_rotation, 1.0f, 0.0f, 360.0f);
 
-				ImGui::DragFloat("rotation", &selectedTransformComponent->_rotation, 1.0f, 0.0f, 360.0f);
-
-				static float* scale[2] = { &selectedTransformComponent->_scale._x, &selectedTransformComponent->_scale._y };
-				ImGui::DragFloat2("scale", *(scale));
+					static float* scale[2] = { &tc->_scale._x, &tc->_scale._y };
+					ImGui::DragFloat2("scale", *(scale));
+				}
 			}
 
 			ImGui::End();
