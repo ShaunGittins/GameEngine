@@ -140,22 +140,24 @@ void Game::Update(Uint32 deltaTime) {
 
 		ImGui::Begin("Entities");
 
-		ImGui::ListBoxHeader("Entities");
-		for (Entity* entity : currentScene->entities)
+		if (ImGui::ListBoxHeader("Entities"))
 		{
-			string item_name = to_string(entity->_id);
-			if (entity->GetComponent<NameComponent>()) {
-				item_name += " \"" + entity->GetComponent<NameComponent>()->_name + "\"";
-			}
-			bool is_selected = selectedEntity == entity;
-			if (ImGui::Selectable(item_name.c_str(), is_selected))
+			for (Entity* entity : currentScene->entities)
 			{
-				selectedEntity = entity;
+				string item_name = to_string(entity->_id);
+				if (entity->GetComponent<NameComponent>()) {
+					item_name += " \"" + entity->GetComponent<NameComponent>()->_name + "\"";
+				}
+				bool is_selected = selectedEntity == entity;
+				if (ImGui::Selectable(item_name.c_str(), is_selected))
+				{
+					selectedEntity = entity;
+				}
+				if (is_selected)
+					ImGui::SetItemDefaultFocus();
 			}
-			if (is_selected)
-				ImGui::SetItemDefaultFocus();
+			ImGui::ListBoxFooter();
 		}
-		ImGui::ListBoxFooter();
 
 		ImGui::End();
 
