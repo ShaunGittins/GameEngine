@@ -129,8 +129,9 @@ void Game::Input() {
 			ImGui_ImplSDL2_ProcessEvent(&event);
 		}
 	}
-
 }
+
+#include "GameGUI.h"
 
 void Game::Update(Uint32 deltaTime) {
 	Scene* currentScene = sceneManager.GetCurrentScene();
@@ -139,6 +140,8 @@ void Game::Update(Uint32 deltaTime) {
 		ImGui_ImplSDLRenderer_NewFrame();
 		ImGui_ImplSDL2_NewFrame(_window);
 		ImGui::NewFrame();
+
+		GameGUI::ShowEditorMainMenuBar(this);
 
 		ImGui::Begin("General");
 		if (ImGui::ArrowButton("##run", ImGuiDir_Right)) { mode = Mode::RUN; }
