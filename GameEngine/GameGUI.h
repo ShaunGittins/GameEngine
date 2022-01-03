@@ -3,6 +3,9 @@
 #include <imgui_impl_sdlrenderer.h>
 #include <imgui_impl_sdl.h>
 #include "Game.h"
+#include "Scene.h"
+#include "Entity.h"
+#include "NameComponent.h"
 #include <imgui_internal.h>
 
 class GameGUI
@@ -57,6 +60,30 @@ public:
             }
         }
         ImGui::End();
+    }
+
+    static void ShowEditorEntityList(Scene* currentScene, Entity* selectedEntity) {
+        if (ImGui::Begin("Entities")) {
+            if (ImGui::ListBoxHeader("Entities"))
+            {
+                for (Entity* entity : currentScene->entities)
+                {
+                    string entityName = std::to_string(entity->_id);
+                    if (entity->GetComponent<NameComponent>()) {
+                        entityName += " \"" + entity->GetComponent<NameComponent>()->_name + "\"";
+                    }
+                    bool isSelected = selectedEntity == entity;
+                    if (ImGui::Selectable(entityName.c_str(), isSelected))
+                    {
+                        selectedEntity = entity;
+                    }
+                    if (isSelected)
+                        ImGui::SetItemDefaultFocus();
+                }
+                ImGui::ListBoxFooter();
+            }
+            ImGui::End();
+        }
     }
 };
 
