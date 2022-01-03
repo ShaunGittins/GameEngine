@@ -31,7 +31,6 @@ public:
 private:
 	SDL_Window* _window;
 	SDL_Renderer* _renderer;
-	SDL_Event _event;
 
 	SceneManager sceneManager = SceneManager();
 

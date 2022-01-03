@@ -81,54 +81,55 @@ void Game::Init()
 
 void Game::Input() {
 	const Uint8 *keyboard_state = SDL_GetKeyboardState(NULL);
+	SDL_Event event;
+	while (SDL_PollEvent(&event)) {
+		if (event.type == SDL_KEYDOWN || event.type == SDL_KEYUP) {
+			Scene* currentScene = sceneManager.GetCurrentScene();
+			if (currentScene == sceneManager.GetScene(1)) {
+				// Player movement
+				controlInput.up = (keyboard_state[SDL_SCANCODE_W] && !(keyboard_state[SDL_SCANCODE_S]));
+				controlInput.down = (!keyboard_state[SDL_SCANCODE_W] && (keyboard_state[SDL_SCANCODE_S]));
+				controlInput.left = (keyboard_state[SDL_SCANCODE_A] && !(keyboard_state[SDL_SCANCODE_D]));
+				controlInput.right = (!keyboard_state[SDL_SCANCODE_A] && (keyboard_state[SDL_SCANCODE_D]));
 
-	SDL_PollEvent(&_event);
+				// Camera movement
+				cameraControlInput.up = (keyboard_state[SDL_SCANCODE_UP] && !(keyboard_state[SDL_SCANCODE_DOWN]));
+				cameraControlInput.down = (!keyboard_state[SDL_SCANCODE_UP] && (keyboard_state[SDL_SCANCODE_DOWN]));
+				cameraControlInput.left = (keyboard_state[SDL_SCANCODE_LEFT] && !(keyboard_state[SDL_SCANCODE_RIGHT]));
+				cameraControlInput.right = (!keyboard_state[SDL_SCANCODE_LEFT] && (keyboard_state[SDL_SCANCODE_RIGHT]));
+			}
 
-	if (_event.type == SDL_KEYDOWN || _event.type == SDL_KEYUP) {
-		Scene* currentScene = sceneManager.GetCurrentScene();
-		if (currentScene == sceneManager.GetScene(1)) {
-			// Player movement
-			controlInput.up = (keyboard_state[SDL_SCANCODE_W] && !(keyboard_state[SDL_SCANCODE_S]));
-			controlInput.down = (!keyboard_state[SDL_SCANCODE_W] && (keyboard_state[SDL_SCANCODE_S]));
-			controlInput.left = (keyboard_state[SDL_SCANCODE_A] && !(keyboard_state[SDL_SCANCODE_D]));
-			controlInput.right = (!keyboard_state[SDL_SCANCODE_A] && (keyboard_state[SDL_SCANCODE_D]));
+			// Switch scenes
+			if (keyboard_state[SDL_SCANCODE_Y]) {
+				if (sceneManager.GetCurrentSceneNumber() == 0) {
+					sceneManager.SetScene(1);
+				}
+				else {
+					sceneManager.SetScene(0);
+				}
+			}
 
-			// Camera movement
-			cameraControlInput.up = (keyboard_state[SDL_SCANCODE_UP] && !(keyboard_state[SDL_SCANCODE_DOWN]));
-			cameraControlInput.down = (!keyboard_state[SDL_SCANCODE_UP] && (keyboard_state[SDL_SCANCODE_DOWN]));
-			cameraControlInput.left = (keyboard_state[SDL_SCANCODE_LEFT] && !(keyboard_state[SDL_SCANCODE_RIGHT]));
-			cameraControlInput.right = (!keyboard_state[SDL_SCANCODE_LEFT] && (keyboard_state[SDL_SCANCODE_RIGHT]));
+			// Quit
+			if (keyboard_state[SDL_SCANCODE_ESCAPE]) {
+				if (mode == Mode::RUN) {
+					mode = Mode::EDITOR;
+				}
+				else if (mode == Mode::EDITOR) {
+					running = false;
+				}
+			}
 		}
 
-		// Switch scenes
-		if (keyboard_state[SDL_SCANCODE_Y]) {
-			if (sceneManager.GetCurrentSceneNumber() == 0) {
-				sceneManager.SetScene(1);
-			}
-			else {
-				sceneManager.SetScene(0);
-			}
+		if (event.type == SDL_MOUSEMOTION)
+		{
+			SDL_GetMouseState(&xMouse, &yMouse);
 		}
 
-		// Quit
-		if (keyboard_state[SDL_SCANCODE_ESCAPE]) {
-			if (mode == Mode::RUN) {
-				mode = Mode::EDITOR;
-			}
-			else if (mode == Mode::EDITOR) {
-				running = false;
-			}
+		if (mode == Mode::EDITOR) {
+			ImGui_ImplSDL2_ProcessEvent(&event);
 		}
 	}
 
-	if (_event.type == SDL_MOUSEMOTION)
-	{
-		SDL_GetMouseState(&xMouse, &yMouse);
-	}
-
-	if (mode == Mode::EDITOR) {
-		ImGui_ImplSDL2_ProcessEvent(&_event);
-	}
 }
 
 void Game::Update(Uint32 deltaTime) {
