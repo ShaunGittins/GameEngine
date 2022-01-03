@@ -3,20 +3,18 @@
 #include <imgui_impl_sdlrenderer.h>
 #include <imgui_impl_sdl.h>
 #include "Game.h"
+#include <imgui_internal.h>
 
 class GameGUI
 {
 public:
 	static void ShowEditorMainMenuBar(Game* game) {
-        if (ImGui::BeginMainMenuBar())
-        {
-            if (ImGui::BeginMenu("File"))
-            {
+        if (ImGui::BeginMainMenuBar()) {
+            if (ImGui::BeginMenu("File")) {
                 ShowEditorMenuFile(game);
                 ImGui::EndMenu();
             }
-            if (ImGui::BeginMenu("Edit"))
-            {
+            if (ImGui::BeginMenu("Edit")) {
                 if (ImGui::MenuItem("Undo", "CTRL+Z")) {}
                 if (ImGui::MenuItem("Redo", "CTRL+Y", false, false)) {}
                 ImGui::Separator();
@@ -45,6 +43,20 @@ public:
         if (ImGui::MenuItem("Quit", "Alt+F4")) {
             game->running = false;
         }
+    }
+
+    static void ShowEditorGameControlBar(Game* game) {
+
+        ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_MenuBar;
+        float height = ImGui::GetFrameHeight();
+
+        if (ImGui::BeginViewportSideBar("##GameControlBar", NULL, ImGuiDir_Up, height, window_flags)) {
+            if (ImGui::BeginMenuBar()) {
+                if (ImGui::ArrowButton("##run", ImGuiDir_Right)) { game->mode = Mode::RUN; }
+                ImGui::EndMenuBar();
+            }
+        }
+        ImGui::End();
     }
 };
 

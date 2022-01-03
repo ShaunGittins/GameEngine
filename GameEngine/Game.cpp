@@ -17,9 +17,6 @@
 using namespace std;
 using namespace Math;
 
-enum class Mode { EDITOR, RUN, RUN_DEBUG };
-Mode mode = Mode::EDITOR;
-
 Entity* selectedEntity = nullptr;
 
 using std::string;
@@ -112,9 +109,9 @@ void Game::Input() {
 			// Quit
 			if (keyboard_state[SDL_SCANCODE_ESCAPE]) {
 				if (mode == Mode::RUN) {
-					mode = Mode::EDITOR;
+					mode = Mode::EDIT;
 				}
-				else if (mode == Mode::EDITOR) {
+				else if (mode == Mode::EDIT) {
 					running = false;
 				}
 			}
@@ -125,7 +122,7 @@ void Game::Input() {
 			SDL_GetMouseState(&xMouse, &yMouse);
 		}
 
-		if (mode == Mode::EDITOR) {
+		if (mode == Mode::EDIT) {
 			ImGui_ImplSDL2_ProcessEvent(&event);
 		}
 	}
@@ -136,15 +133,15 @@ void Game::Input() {
 void Game::Update(Uint32 deltaTime) {
 	Scene* currentScene = sceneManager.GetCurrentScene();
 
-	if (mode == Mode::EDITOR) {
+	if (mode == Mode::EDIT) {
 		ImGui_ImplSDLRenderer_NewFrame();
 		ImGui_ImplSDL2_NewFrame(_window);
 		ImGui::NewFrame();
 
 		GameGUI::ShowEditorMainMenuBar(this);
+		GameGUI::ShowEditorGameControlBar(this);
 
 		ImGui::Begin("General");
-		if (ImGui::ArrowButton("##run", ImGuiDir_Right)) { mode = Mode::RUN; }
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 
 		ImGui::End();
@@ -280,7 +277,7 @@ void Game::Render() {
 	sceneManager.GetCurrentScene()->Render();
 	SDL_SetRenderDrawColor(_renderer, 255, 255, 255, 255);
 
-	if (mode == Mode::EDITOR) {
+	if (mode == Mode::EDIT) {
 		ImGui_ImplSDLRenderer_RenderDrawData(ImGui::GetDrawData());
 	}
 
