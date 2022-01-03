@@ -12,8 +12,9 @@ SceneManager::~SceneManager()
 	_scenes.clear();
 }
 
-void SceneManager::AddScene(Scene* scene)
+void SceneManager::AddScene(Scene* scene, string sceneFilename)
 {
+	scene->AddEntitiesFromJSON(sceneFilename);
 	_scenes.push_back(scene);
 }
 

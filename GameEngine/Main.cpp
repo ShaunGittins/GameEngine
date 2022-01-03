@@ -16,7 +16,8 @@ int main(int argc, char* args[]) {
 	SDL_Init(SDL_INIT_EVERYTHING);
 	SDL_Window* window;
 	SDL_Renderer* renderer;
-	if (SDL_CreateWindowAndRenderer(1200, 800, SDL_WINDOW_SHOWN, &window, &renderer)) {
+
+	if (SDL_CreateWindowAndRenderer(1920, 1080, SDL_WINDOW_SHOWN, &window, &renderer)) {
 		SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't create window and renderer: %s", SDL_GetError());
 		return 3;
 	}

@@ -15,10 +15,11 @@
 #include <imgui_impl_sdlrenderer.h>
 #include <imgui_impl_sdl.h>
 using namespace std;
-
 using namespace Math;
 
-// IMGUI Testing
+enum class Mode { EDITOR, RUN, RUN_DEBUG };
+Mode mode = Mode::EDITOR;
+
 Entity* selectedEntity = nullptr;
 
 using std::string;
@@ -44,16 +45,22 @@ Game::Game(SDL_Window* window, SDL_Renderer* renderer) {
 	_window = window;
 	_renderer = renderer;
 
-	SDL_SetRenderDrawColor(_renderer, 255, 255, 255, 255);
+	int display_index = SDL_GetWindowDisplayIndex(window);
+	SDL_Rect usable_bounds;
+	if (0 != SDL_GetDisplayUsableBounds(display_index, &usable_bounds)) {
+		SDL_Log("error getting usable bounds");
+		return;
+	}
 
-	_sceneManager = new SceneManager();
+	SDL_SetWindowPosition(window, usable_bounds.x, usable_bounds.y);
+	SDL_SetWindowSize(window, usable_bounds.w, usable_bounds.h);
+
+	SDL_SetRenderDrawColor(_renderer, 255, 255, 255, 255);
 
 	Init();
 }
 
 Game::~Game() {
-	delete _sceneManager;
-
 	SDL_DestroyWindow(_window);
 	SDL_DestroyRenderer(_renderer);
 	SDL_Quit();
@@ -67,16 +74,9 @@ void Game::Init()
 	CameraComponent* camera1 = new CameraComponent({ 0.0f, 0.0f, static_cast<float>(w), static_cast<float>(h) });
 	CameraComponent* camera2 = new CameraComponent({ 0.0f, 0.0f, static_cast<float>(w), static_cast<float>(h) });
 	
-	// Scenes:
-	// 1. Default
-	Scene* defaultScene = new Scene(_renderer, camera1);
-	defaultScene->AddEntitiesFromJSON("defaultScene.json");
-	_sceneManager->AddScene(defaultScene);
-
-	// 2. Testing
-	Scene* testingScene = new Scene(_renderer, camera2);
-	testingScene->AddEntitiesFromJSON("testingScene.json");
-	_sceneManager->AddScene(testingScene);
+	// Add scenes:
+	sceneManager.AddScene(new Scene(_renderer, camera1), "defaultScene.json");
+	sceneManager.AddScene(new Scene(_renderer, camera2), "testingScene.json");
 }
 
 void Game::Input() {
@@ -85,8 +85,8 @@ void Game::Input() {
 	SDL_PollEvent(&_event);
 
 	if (_event.type == SDL_KEYDOWN || _event.type == SDL_KEYUP) {
-		Scene* currentScene = _sceneManager->GetCurrentScene();
-		if (currentScene == _sceneManager->GetScene(1)) {
+		Scene* currentScene = sceneManager.GetCurrentScene();
+		if (currentScene == sceneManager.GetScene(1)) {
 			// Player movement
 			controlInput.up = (keyboard_state[SDL_SCANCODE_W] && !(keyboard_state[SDL_SCANCODE_S]));
 			controlInput.down = (!keyboard_state[SDL_SCANCODE_W] && (keyboard_state[SDL_SCANCODE_S]));
@@ -102,17 +102,22 @@ void Game::Input() {
 
 		// Switch scenes
 		if (keyboard_state[SDL_SCANCODE_Y]) {
-			if (_sceneManager->GetCurrentSceneNumber() == 0) {
-				_sceneManager->SetScene(1);
+			if (sceneManager.GetCurrentSceneNumber() == 0) {
+				sceneManager.SetScene(1);
 			}
 			else {
-				_sceneManager->SetScene(0);
+				sceneManager.SetScene(0);
 			}
 		}
 
 		// Quit
 		if (keyboard_state[SDL_SCANCODE_ESCAPE]) {
-			running = false;
+			if (mode == Mode::RUN) {
+				mode = Mode::EDITOR;
+			}
+			else if (mode == Mode::EDITOR) {
+				running = false;
+			}
 		}
 	}
 
@@ -121,19 +126,21 @@ void Game::Input() {
 		SDL_GetMouseState(&xMouse, &yMouse);
 	}
 
-	ImGui_ImplSDL2_ProcessEvent(&_event);
+	if (mode == Mode::EDITOR) {
+		ImGui_ImplSDL2_ProcessEvent(&_event);
+	}
 }
 
 void Game::Update(Uint32 deltaTime) {
-	ImGui_ImplSDLRenderer_NewFrame();
-	ImGui_ImplSDL2_NewFrame(_window);
-	ImGui::NewFrame();
+	Scene* currentScene = sceneManager.GetCurrentScene();
 
-	Scene* currentScene = _sceneManager->GetCurrentScene();
-	
-	if (currentScene == _sceneManager->GetScene(1)) {
+	if (mode == Mode::EDITOR) {
+		ImGui_ImplSDLRenderer_NewFrame();
+		ImGui_ImplSDL2_NewFrame(_window);
+		ImGui::NewFrame();
+
 		ImGui::Begin("General");
-
+		if (ImGui::ArrowButton("##run", ImGuiDir_Right)) { mode = Mode::RUN; }
 		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 
 		ImGui::End();
@@ -225,7 +232,9 @@ void Game::Update(Uint32 deltaTime) {
 
 			ImGui::End();
 		}
+	}
 
+	if (currentScene == sceneManager.GetScene(1)) {
 		Vector2 movementVec = Vector2(0.0f, 0.0f);
 
 		if (controlInput.left) movementVec += Vector2(-PLAYER_MOVEMENT_SPEED, 0) * deltaTime;
@@ -262,9 +271,14 @@ void Game::Update(Uint32 deltaTime) {
 
 void Game::Render() {
 	ImGui::Render();
+
 	SDL_RenderClear(_renderer);
-	_sceneManager->GetCurrentScene()->Render();
+	sceneManager.GetCurrentScene()->Render();
 	SDL_SetRenderDrawColor(_renderer, 255, 255, 255, 255);
-	ImGui_ImplSDLRenderer_RenderDrawData(ImGui::GetDrawData());
+
+	if (mode == Mode::EDITOR) {
+		ImGui_ImplSDLRenderer_RenderDrawData(ImGui::GetDrawData());
+	}
+
 	SDL_RenderPresent(_renderer);
 }

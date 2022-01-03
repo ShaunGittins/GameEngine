@@ -33,7 +33,7 @@ private:
 	SDL_Renderer* _renderer;
 	SDL_Event _event;
 
-	SceneManager* _sceneManager;
+	SceneManager sceneManager = SceneManager();
 
 	void Init();
 };

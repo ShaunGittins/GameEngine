@@ -8,7 +8,7 @@ public:
 	SceneManager();
 	~SceneManager();
 
-	void AddScene(Scene* scene);
+	void AddScene(Scene* scene, string sceneFilename);
 	Scene* GetCurrentScene();
 	Scene* GetScene(int sceneNumber);
 	void SetScene(int sceneNumber);
