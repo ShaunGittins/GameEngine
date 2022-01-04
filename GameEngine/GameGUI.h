@@ -14,8 +14,6 @@ public:
 
     static void ShowEditorSceneHierachy(SceneManager* sceneManager);
 
-    static void ShowEditorEntityList(Scene* currentScene);
-
     static void ShowEditorEntityProperties();
 
     static void ShowEditorEntityPropertiesID();

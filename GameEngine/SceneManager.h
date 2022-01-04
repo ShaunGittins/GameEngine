@@ -13,6 +13,7 @@ public:
 	Scene* GetScene(int sceneNumber);
 	void SetScene(int sceneNumber);
 	int GetCurrentSceneNumber();
+	int GetSceneNumber(Scene* scene);
 
 	void Update();
 	void Render();

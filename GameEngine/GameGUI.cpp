@@ -69,34 +69,15 @@ void GameGUI::ShowEditorSceneHierachy(SceneManager* sceneManager)
             if (ImGui::TreeNode(scene->name.c_str())) {
                 for (Entity* entity : scene->entities) {
                     ImGui::TreeNodeEx(entity->GetComponent<NameComponent>()->_name.c_str(), ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen);
+                    if (ImGui::IsItemClicked()) {
+                        selectedEntity = entity;
+                    }
                 }
                 ImGui::TreePop();
             }
-        }
-        ImGui::End();
-    }
-}
-
-void GameGUI::ShowEditorEntityList(Scene* currentScene)
-{
-    if (ImGui::Begin("Entities")) {
-        if (ImGui::ListBoxHeader("Entities"))
-        {
-            for (Entity* entity : currentScene->entities)
-            {
-                string entityName = to_string(entity->_id);
-                if (entity->GetComponent<NameComponent>()) {
-                    entityName += " \"" + entity->GetComponent<NameComponent>()->_name + "\"";
-                }
-                bool isSelected = selectedEntity == entity;
-                if (ImGui::Selectable(entityName.c_str(), isSelected))
-                {
-                    selectedEntity = entity;
-                }
-                if (isSelected)
-                    ImGui::SetItemDefaultFocus();
+            if (ImGui::IsItemClicked()) {
+                sceneManager->SetScene(sceneManager->GetSceneNumber(scene));
             }
-            ImGui::ListBoxFooter();
         }
         ImGui::End();
     }

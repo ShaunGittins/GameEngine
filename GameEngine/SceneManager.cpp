@@ -39,6 +39,16 @@ int SceneManager::GetCurrentSceneNumber()
 	return _currentScene;
 }
 
+int SceneManager::GetSceneNumber(Scene* scene)
+{
+	auto it = std::find(_scenes.begin(), _scenes.end(), scene);
+
+	if (it != _scenes.end())
+		return (it - _scenes.begin());
+	else 
+		return -1;
+}
+
 void SceneManager::Update()
 {
 	GetCurrentScene()->Update();
