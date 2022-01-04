@@ -21,5 +21,7 @@ public:
     static void ShowEditorEntityPropertiesRenderComponent();
 
     static void ShowEditorEntityPropertiesTransformComponent();
+
+    static void ShowEditorEntityPropertiesScriptComponent();
 };
 

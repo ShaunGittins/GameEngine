@@ -1,9 +1,13 @@
 #include "GameGUI.h"
+
 #include <imgui_impl_sdlrenderer.h>
 #include <imgui_impl_sdl.h>
-#include "NameComponent.h"
-#include "Entity.h"
 #include <imgui_internal.h>
+
+#include "Entity.h"
+#include "NameComponent.h"
+#include "ScriptComponent.h"
+
 using std::to_string;
 
 Entity* selectedEntity = nullptr;
@@ -162,6 +166,16 @@ void GameGUI::ShowEditorEntityPropertiesTransformComponent()
 
             static float* scale[2] = { &tc->_scale._x, &tc->_scale._y };
             ImGui::DragFloat2("scale", *(scale));
+        }
+    }
+}
+
+void GameGUI::ShowEditorEntityPropertiesScriptComponent()
+{
+    if (ScriptComponent* sc = selectedEntity->GetComponent<ScriptComponent>()) {
+        if (ImGui::CollapsingHeader("Script Component")) {
+            string fullName = "Script: " + sc->name;
+            ImGui::Text(fullName.c_str());
         }
     }
 }
