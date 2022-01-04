@@ -63,23 +63,26 @@ void GameEngine::Init()
 void GameEngine::Input() {
 	SDL_Event event;
 	while (SDL_PollEvent(&event)) {
-		_game.Input(event);
+		const Uint8* keyboard_state = SDL_GetKeyboardState(NULL);
 
-		if (event.type == SDL_KEYDOWN || event.type == SDL_KEYUP) {
-			const Uint8* keyboard_state = SDL_GetKeyboardState(NULL);
+		if (mode == Mode::RUN || mode == Mode::RUN_DEBUG) {
+			_game.Input(event);
 
-			// Quit
-			if (keyboard_state[SDL_SCANCODE_ESCAPE]) {
-				if (mode == Mode::RUN) {
+			if (event.type == SDL_KEYDOWN || event.type == SDL_KEYUP) {
+				if (keyboard_state[SDL_SCANCODE_ESCAPE]) {
 					mode = Mode::EDIT;
-				}
-				else if (mode == Mode::EDIT) {
-					running = false;
 				}
 			}
 		}
+		else if (mode == Mode::EDIT) {
+			if (event.type == SDL_KEYDOWN || event.type == SDL_KEYUP) {
 
-		if (mode == Mode::EDIT) {
+				// Quit
+				if (keyboard_state[SDL_SCANCODE_LALT] && keyboard_state[SDL_SCANCODE_F4]) {
+					running = false;
+				}
+			}
+
 			ImGui_ImplSDL2_ProcessEvent(&event);
 		}
 	}
@@ -88,7 +91,11 @@ void GameEngine::Input() {
 #include "GameGUI.h"
 
 void GameEngine::Update(Uint32 deltaTime) {
-	_game.Update(deltaTime);
+
+	if (mode == Mode::RUN || mode == Mode::RUN_DEBUG) {
+		_game.Update(deltaTime);
+	}
+
 	Scene* currentScene = sceneManager.GetCurrentScene();
 
 	if (mode == Mode::EDIT) {
