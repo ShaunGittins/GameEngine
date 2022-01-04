@@ -17,11 +17,6 @@
 using namespace std;
 using namespace Math;
 
-enum class Mode { EDITOR, RUN, RUN_DEBUG };
-Mode mode = Mode::EDITOR;
-
-Entity* selectedEntity = nullptr;
-
 using std::string;
 using std::cout;
 using std::endl;
@@ -112,9 +107,9 @@ void Game::Input() {
 			// Quit
 			if (keyboard_state[SDL_SCANCODE_ESCAPE]) {
 				if (mode == Mode::RUN) {
-					mode = Mode::EDITOR;
+					mode = Mode::EDIT;
 				}
-				else if (mode == Mode::EDITOR) {
+				else if (mode == Mode::EDIT) {
 					running = false;
 				}
 			}
@@ -125,114 +120,28 @@ void Game::Input() {
 			SDL_GetMouseState(&xMouse, &yMouse);
 		}
 
-		if (mode == Mode::EDITOR) {
+		if (mode == Mode::EDIT) {
 			ImGui_ImplSDL2_ProcessEvent(&event);
 		}
 	}
-
 }
+
+#include "GameGUI.h"
 
 void Game::Update(Uint32 deltaTime) {
 	Scene* currentScene = sceneManager.GetCurrentScene();
 
-	if (mode == Mode::EDITOR) {
+	if (mode == Mode::EDIT) {
 		ImGui_ImplSDLRenderer_NewFrame();
 		ImGui_ImplSDL2_NewFrame(_window);
 		ImGui::NewFrame();
 
-		ImGui::Begin("General");
-		if (ImGui::ArrowButton("##run", ImGuiDir_Right)) { mode = Mode::RUN; }
-		ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-
-		ImGui::End();
-
-		ImGui::Begin("Entities");
-
-		if (ImGui::ListBoxHeader("Entities"))
-		{
-			for (Entity* entity : currentScene->entities)
-			{
-				string entityName = to_string(entity->_id);
-				if (entity->GetComponent<NameComponent>()) {
-					entityName += " \"" + entity->GetComponent<NameComponent>()->_name + "\"";
-				}
-				bool isSelected = selectedEntity == entity;
-				if (ImGui::Selectable(entityName.c_str(), isSelected))
-				{
-					selectedEntity = entity;
-				}
-				if (isSelected)
-					ImGui::SetItemDefaultFocus();
-			}
-			ImGui::ListBoxFooter();
-		}
-
-		ImGui::End();
+		GameGUI::ShowEditorMainMenuBar(this);
+		GameGUI::ShowEditorGameControlBar(this);
+		GameGUI::ShowEditorEntityList(currentScene);
+		GameGUI::ShowEditorEntityProperties();
 
 		ImGui::ShowDemoWindow();
-
-		if (selectedEntity != nullptr) {
-			ImGui::Begin("Entity properties");
-
-
-			// GUI Component ID / Name
-			string guiSelectedIdentifier = "id: " + to_string(selectedEntity->_id);
-
-			if (selectedEntity->GetComponent<NameComponent>()) {
-				guiSelectedIdentifier += " | name: \"" + selectedEntity->GetComponent<NameComponent>()->_name + "\"";
-			}
-
-			ImGui::Text(guiSelectedIdentifier.c_str());
-			ImGui::Separator();
-			ImGui::Text("Components:");
-
-			// GUI Component Render
-			if (RenderComponent* rc = selectedEntity->GetComponent<RenderComponent>()) {
-				if (ImGui::CollapsingHeader("Render Component")) {
-					ImGui::Checkbox("Visible", &rc->isVisible);
-					ImGui::SliderInt("Layer", &rc->layer, 0, 10);
-
-					if (rc->rects.size() > 0) {
-						ImGui::Text("Primitives: ");
-					}
-
-					// TODO: Rework so one renderComponent = one sprite or primitive?
-					if (rc->sprites.size() > 0) {
-						ImGui::Text("Sprite: ");
-						Sprite* mySprite = *rc->sprites.begin();
-						ImGui::Text(("File name: " + mySprite->filename).c_str());
-
-						static float* position[2] = { &mySprite->rect.x, &mySprite->rect.y };
-						ImGui::DragFloat2("Position relative", *(position));
-
-						static float* scale[2] = { &mySprite->rect.w, &mySprite->rect.h };
-						ImGui::DragFloat2("Size", *(scale));
-
-						static float* pivot[2] = { &mySprite->rotationPoint.x, &mySprite->rotationPoint.y };
-						ImGui::DragFloat2("Pivot point", *(pivot));
-
-						ImGui::SliderFloat("Angle", &mySprite->angle, -360, 360, "%.0f deg", ImGuiSliderFlags_None);
-						ImGui::Text(to_string(mySprite->angle).c_str());
-					}
-				}
-			}
-
-			// GUI Component Transform
-			if (TransformComponent* tc = selectedEntity->GetComponent<TransformComponent>()) {
-				if (ImGui::CollapsingHeader("Transform Component")) {
-					ImGui::Text("Transform Component:");
-					static float* position[2] = { &tc->_position._x, &tc->_position._y };
-					ImGui::DragFloat2("position", *(position));
-
-					ImGui::DragFloat("rotation", &tc->_rotation, 1.0f, 0.0f, 360.0f);
-
-					static float* scale[2] = { &tc->_scale._x, &tc->_scale._y };
-					ImGui::DragFloat2("scale", *(scale));
-				}
-			}
-
-			ImGui::End();
-		}
 	}
 
 	if (currentScene == sceneManager.GetScene(1)) {
@@ -277,7 +186,7 @@ void Game::Render() {
 	sceneManager.GetCurrentScene()->Render();
 	SDL_SetRenderDrawColor(_renderer, 255, 255, 255, 255);
 
-	if (mode == Mode::EDITOR) {
+	if (mode == Mode::EDIT) {
 		ImGui_ImplSDLRenderer_RenderDrawData(ImGui::GetDrawData());
 	}
 

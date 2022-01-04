@@ -1,6 +1,7 @@
 #pragma once
 #include "SDL.h"
 #include "SceneManager.h"
+#include "Mode.h"
 #include <Vector>
 
 class Game
@@ -27,6 +28,7 @@ public:
 	void Render();
 
 	bool running = true;
+	Mode mode = Mode::EDIT;
 
 private:
 	SDL_Window* _window;
