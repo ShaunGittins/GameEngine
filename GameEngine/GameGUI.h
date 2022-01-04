@@ -2,16 +2,15 @@
 #include "GameEngine.h"
 #include "Scene.h"
 
-
 class GameGUI
 {
 public:
 
-    static void ShowEditorMainMenuBar(GameEngine* game);
+    static void ShowEditorMainMenuBar(GameEngine* gameEngine);
 
-    static void ShowEditorMenuFile(GameEngine* game);
+    static void ShowEditorMenuFile(GameEngine* gameEngine);
 
-    static void ShowEditorGameControlBar(GameEngine* game);
+    static void ShowEditorGameControlBar(GameEngine* gameEngine);
 
     static void ShowEditorEntityList(Scene* currentScene);
 
