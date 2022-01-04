@@ -1,5 +1,5 @@
 #pragma once
-#include "Game.h"
+#include "GameEngine.h"
 #include "Scene.h"
 
 
@@ -7,11 +7,11 @@ class GameGUI
 {
 public:
 
-    static void ShowEditorMainMenuBar(Game* game);
+    static void ShowEditorMainMenuBar(GameEngine* game);
 
-    static void ShowEditorMenuFile(Game* game);
+    static void ShowEditorMenuFile(GameEngine* game);
 
-    static void ShowEditorGameControlBar(Game* game);
+    static void ShowEditorGameControlBar(GameEngine* game);
 
     static void ShowEditorEntityList(Scene* currentScene);
 

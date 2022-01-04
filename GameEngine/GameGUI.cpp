@@ -8,12 +8,12 @@ using std::to_string;
 
 Entity* selectedEntity = nullptr;
 
-void GameGUI::ShowEditorMainMenuBar(Game* game)
+void GameGUI::ShowEditorMainMenuBar(GameEngine* gameEngine)
 {
     {
         if (ImGui::BeginMainMenuBar()) {
             if (ImGui::BeginMenu("File")) {
-                ShowEditorMenuFile(game);
+                ShowEditorMenuFile(gameEngine);
                 ImGui::EndMenu();
             }
             if (ImGui::BeginMenu("Edit")) {
@@ -30,7 +30,7 @@ void GameGUI::ShowEditorMainMenuBar(Game* game)
     }
 }
 
-void GameGUI::ShowEditorMenuFile(Game* game)
+void GameGUI::ShowEditorMenuFile(GameEngine* gameEngine)
 {
     if (ImGui::MenuItem("New")) {}
     if (ImGui::MenuItem("Open", "Ctrl+O")) {}
@@ -44,18 +44,18 @@ void GameGUI::ShowEditorMenuFile(Game* game)
 
     ImGui::Separator();
     if (ImGui::MenuItem("Quit", "Alt+F4")) {
-        game->running = false;
+        gameEngine->running = false;
     }
 }
 
-void GameGUI::ShowEditorGameControlBar(Game* game)
+void GameGUI::ShowEditorGameControlBar(GameEngine* gameEngine)
 {
     ImGuiWindowFlags window_flags = ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_MenuBar;
     float height = ImGui::GetFrameHeight();
 
     if (ImGui::BeginViewportSideBar("##GameControlBar", NULL, ImGuiDir_Up, height, window_flags)) {
         if (ImGui::BeginMenuBar()) {
-            if (ImGui::ArrowButton("##run", ImGuiDir_Right)) { game->mode = Mode::RUN; }
+            if (ImGui::ArrowButton("##run", ImGuiDir_Right)) { gameEngine->mode = Mode::RUN; }
             ImGui::EndMenuBar();
         }
     }

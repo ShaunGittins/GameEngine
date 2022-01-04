@@ -1,4 +1,4 @@
-#include "Game.h"
+#include "GameEngine.h"
 #include "SceneManager.h"
 #include "RenderSystem.h"
 #include "Entity.h"
@@ -36,7 +36,7 @@ public:
 ControlInput controlInput;
 ControlInput cameraControlInput;
 
-Game::Game(SDL_Window* window, SDL_Renderer* renderer) {
+GameEngine::GameEngine(SDL_Window* window, SDL_Renderer* renderer) {
 	_window = window;
 	_renderer = renderer;
 
@@ -55,13 +55,13 @@ Game::Game(SDL_Window* window, SDL_Renderer* renderer) {
 	Init();
 }
 
-Game::~Game() {
+GameEngine::~GameEngine() {
 	SDL_DestroyWindow(_window);
 	SDL_DestroyRenderer(_renderer);
 	SDL_Quit();
 }
 
-void Game::Init()
+void GameEngine::Init()
 {
 	// Camera to attach to scene/s
 	int w, h;
@@ -74,7 +74,7 @@ void Game::Init()
 	sceneManager.AddScene(new Scene(_renderer, camera2), "testingScene.json");
 }
 
-void Game::Input() {
+void GameEngine::Input() {
 	const Uint8 *keyboard_state = SDL_GetKeyboardState(NULL);
 	SDL_Event event;
 	while (SDL_PollEvent(&event)) {
@@ -128,7 +128,7 @@ void Game::Input() {
 
 #include "GameGUI.h"
 
-void Game::Update(Uint32 deltaTime) {
+void GameEngine::Update(Uint32 deltaTime) {
 	Scene* currentScene = sceneManager.GetCurrentScene();
 
 	if (mode == Mode::EDIT) {
@@ -179,7 +179,7 @@ void Game::Update(Uint32 deltaTime) {
 	currentScene->Update();
 }
 
-void Game::Render() {
+void GameEngine::Render() {
 	ImGui::Render();
 
 	SDL_RenderClear(_renderer);

@@ -4,11 +4,11 @@
 #include "Mode.h"
 #include <Vector>
 
-class Game
+class GameEngine
 {
 public:
-	Game(SDL_Window* SDL_window, SDL_Renderer* renderer);
-	~Game();
+	GameEngine(SDL_Window* SDL_window, SDL_Renderer* renderer);
+	~GameEngine();
 
 	/**
 	* Process input from devices (e.g. keyboard)
