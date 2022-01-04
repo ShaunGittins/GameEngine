@@ -14,6 +14,7 @@ For learning purposes, at the moment.
 * Render component that can render multiple primitive shapes or sprites, with layers to define render order
 * Viewport / camera offset
 * Frame cap + time delta for updates
+* Editor interface using Dear ImGUI
 
 
 ## How to
@@ -99,11 +100,10 @@ TransformComponents and VelocityComponents are sent to the TransformSystem. Enti
 
 ## Other
 
-### Future features
-* OpenGL or an alternative rather than default SDL renderer so that shaders can be implemented
+### Future Features
+* OpenGL or an alternative rather than SDL_Renderer to allow shaders to be implemented
 * Code component to extend entity functionality
-* Message / Event system (and then collision)
-* IMGUI
+* Message / Event system (and then collision using the system)
 * More primitives (circles, triangles)
 * UUID
 * CMake
