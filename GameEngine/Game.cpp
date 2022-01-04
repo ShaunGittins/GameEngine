@@ -21,6 +21,7 @@ ControlInput cameraControlInput;
 
 void Game::Start()
 {
+	
 }
 
 void Game::End()
@@ -32,8 +33,8 @@ void Game::Input(SDL_Event event)
 	if (event.type == SDL_KEYDOWN || event.type == SDL_KEYUP) {
 		const Uint8* keyboard_state = SDL_GetKeyboardState(NULL);
 
-		Scene* currentScene = _gameEngine->sceneManager.GetCurrentScene();
-		if (currentScene == _gameEngine->sceneManager.GetScene(1)) {
+		Scene* currentScene = _sceneManager->GetCurrentScene();
+		if (currentScene == _sceneManager->GetScene(1)) {
 			// Player movement
 			controlInput.up = (keyboard_state[SDL_SCANCODE_W] && !(keyboard_state[SDL_SCANCODE_S]));
 			controlInput.down = (!keyboard_state[SDL_SCANCODE_W] && (keyboard_state[SDL_SCANCODE_S]));
@@ -49,11 +50,11 @@ void Game::Input(SDL_Event event)
 
 		// Switch scenes
 		if (keyboard_state[SDL_SCANCODE_Y]) {
-			if (_gameEngine->sceneManager.GetCurrentSceneNumber() == 0) {
-				_gameEngine->sceneManager.SetScene(1);
+			if (_sceneManager->GetCurrentSceneNumber() == 0) {
+				_sceneManager->SetScene(1);
 			}
 			else {
-				_gameEngine->sceneManager.SetScene(0);
+				_sceneManager->SetScene(0);
 			}
 		}
 	}
@@ -66,9 +67,9 @@ void Game::Input(SDL_Event event)
 
 void Game::Update(Uint32 deltaTime)
 {
-	Scene* currentScene = _gameEngine->sceneManager.GetCurrentScene();
+	Scene* currentScene = _sceneManager->GetCurrentScene();
 
-	if (currentScene == _gameEngine->sceneManager.GetScene(1)) {
+	if (currentScene == _sceneManager->GetScene(1)) {
 		Vector2 movementVec = Vector2(0.0f, 0.0f);
 
 		if (controlInput.left) movementVec += Vector2(-PLAYER_MOVEMENT_SPEED, 0) * deltaTime;

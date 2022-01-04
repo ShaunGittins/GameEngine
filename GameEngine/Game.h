@@ -1,13 +1,14 @@
 #pragma once
 #include <SDL.h>
+#include "SceneManager.h"
 
 class GameEngine;
 
 class Game
 {
 public:
-	Game(GameEngine* gameEngine) {
-		_gameEngine = gameEngine;
+	Game(SceneManager* sceneManager) {
+		_sceneManager = sceneManager;
 	}
 
 	void Start();
@@ -21,6 +22,6 @@ public:
 	void Render(SDL_Renderer* renderer);
 
 private:
-	GameEngine* _gameEngine;
+	SceneManager* _sceneManager;
 };
 

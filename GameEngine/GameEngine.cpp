@@ -69,18 +69,14 @@ void GameEngine::Input() {
 			_game.Input(event);
 
 			if (event.type == SDL_KEYDOWN || event.type == SDL_KEYUP) {
-				if (keyboard_state[SDL_SCANCODE_ESCAPE]) {
+				if (keyboard_state[SDL_SCANCODE_ESCAPE]) 
 					mode = Mode::EDIT;
-				}
 			}
 		}
 		else if (mode == Mode::EDIT) {
 			if (event.type == SDL_KEYDOWN || event.type == SDL_KEYUP) {
-
-				// Quit
-				if (keyboard_state[SDL_SCANCODE_LALT] && keyboard_state[SDL_SCANCODE_F4]) {
+				if (keyboard_state[SDL_SCANCODE_LALT] && keyboard_state[SDL_SCANCODE_F4])
 					running = false;
-				}
 			}
 
 			ImGui_ImplSDL2_ProcessEvent(&event);
@@ -92,9 +88,8 @@ void GameEngine::Input() {
 
 void GameEngine::Update(Uint32 deltaTime) {
 
-	if (mode == Mode::RUN || mode == Mode::RUN_DEBUG) {
+	if (mode == Mode::RUN || mode == Mode::RUN_DEBUG) 
 		_game.Update(deltaTime);
-	}
 
 	Scene* currentScene = sceneManager.GetCurrentScene();
 
@@ -121,9 +116,8 @@ void GameEngine::Render() {
 	sceneManager.GetCurrentScene()->Render();
 	_game.Render(_renderer);
 	
-	if (mode == Mode::EDIT) {
+	if (mode == Mode::EDIT) 
 		ImGui_ImplSDLRenderer_RenderDrawData(ImGui::GetDrawData());
-	}
 
 	SDL_RenderPresent(_renderer);
 }

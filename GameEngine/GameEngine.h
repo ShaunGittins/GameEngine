@@ -36,7 +36,7 @@ private:
 	SDL_Window* _window;
 	SDL_Renderer* _renderer;
 
-	Game _game = Game(this);
+	Game _game = Game(&sceneManager);
 
 	void Init();
 };
