@@ -100,7 +100,7 @@ void GameGUI::ShowEditorEntityProperties()
             ShowEditorEntityPropertiesTransformComponent();
         }
         else {
-
+            ImGui::Text("No entity selected");
         }
 
         ImGui::End();
@@ -129,7 +129,6 @@ void GameGUI::ShowEditorEntityPropertiesRenderComponent()
                 ImGui::Text("Primitives: ");
             }
 
-            // TODO: Rework so one renderComponent = one sprite or primitive?
             if (rc->sprites.size() > 0) {
                 ImGui::Text("Sprite: ");
                 Sprite* mySprite = *rc->sprites.begin();
