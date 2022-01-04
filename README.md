@@ -8,6 +8,8 @@
 An extension of SDL2 library that implements a base entity component system pattern and a few other basic common game functionality.
 For learning purposes, at the moment.
 
+![gameenginegithubpicture](https://user-images.githubusercontent.com/21079379/147998365-64bd2fce-8bf3-473d-9385-937f409b2c1c.png)
+
 ### Key Features
 * Design and load entities with preattached components from JSON
 * 2D Transform / Velocity components, and basic Vector2D math functions
