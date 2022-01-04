@@ -17,7 +17,8 @@ public:
 	void Update();
 	void Render();
 
+	std::vector<Scene*> _scenes;
+
 private:
 	int _currentScene = 0;
-	std::vector<Scene*> _scenes;
 };

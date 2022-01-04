@@ -62,6 +62,21 @@ void GameGUI::ShowEditorGameControlBar(GameEngine* gameEngine)
     ImGui::End();
 }
 
+void GameGUI::ShowEditorSceneHierachy(SceneManager* sceneManager)
+{
+    if (ImGui::Begin("Scene Hierachy")) {
+        for (Scene* scene : sceneManager->_scenes) {
+            if (ImGui::TreeNode(scene->name.c_str())) {
+                for (Entity* entity : scene->entities) {
+                    ImGui::TreeNodeEx(entity->GetComponent<NameComponent>()->_name.c_str(), ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen);
+                }
+                ImGui::TreePop();
+            }
+        }
+        ImGui::End();
+    }
+}
+
 void GameGUI::ShowEditorEntityList(Scene* currentScene)
 {
     if (ImGui::Begin("Entities")) {

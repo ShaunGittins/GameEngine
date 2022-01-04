@@ -15,6 +15,7 @@ SceneManager::~SceneManager()
 void SceneManager::AddScene(Scene* scene, string sceneFilename)
 {
 	scene->AddEntitiesFromJSON(sceneFilename);
+	scene->name = sceneFilename;
 	_scenes.push_back(scene);
 }
 

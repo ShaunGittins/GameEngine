@@ -34,6 +34,8 @@ public:
 	void Update();
 	void Render();
 
+	string name = "UnnamedScene";
+
 	std::vector<Entity*> entities;
 private:
 	RenderSystem* _renderSystem;
