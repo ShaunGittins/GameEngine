@@ -1,8 +1,8 @@
 #pragma once
 #include "SDL.h"
 #include "SceneManager.h"
-#include "Mode.h"
 #include "Game.h"
+#include "Mode.h"
 #include <Vector>
 
 class GameEngine
@@ -30,13 +30,13 @@ public:
 
 	bool running = true;
 	Mode mode = Mode::EDIT;
+	SceneManager sceneManager = SceneManager();
 
 private:
 	SDL_Window* _window;
 	SDL_Renderer* _renderer;
 
-	Game _game;
-	SceneManager sceneManager = SceneManager();
+	Game _game = Game(this);
 
 	void Init();
 };
