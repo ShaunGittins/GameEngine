@@ -52,6 +52,9 @@ GameEngine::GameEngine(SDL_Window* window, SDL_Renderer* renderer) {
 
 	SDL_SetRenderDrawColor(_renderer, 255, 255, 255, 255);
 
+	_game = Game();
+	_game.Start();
+
 	Init();
 }
 
@@ -75,6 +78,7 @@ void GameEngine::Init()
 }
 
 void GameEngine::Input() {
+	_game.Input();
 	const Uint8 *keyboard_state = SDL_GetKeyboardState(NULL);
 	SDL_Event event;
 	while (SDL_PollEvent(&event)) {
@@ -129,6 +133,7 @@ void GameEngine::Input() {
 #include "GameGUI.h"
 
 void GameEngine::Update(Uint32 deltaTime) {
+	_game.Update(deltaTime);
 	Scene* currentScene = sceneManager.GetCurrentScene();
 
 	if (mode == Mode::EDIT) {
@@ -182,6 +187,7 @@ void GameEngine::Update(Uint32 deltaTime) {
 void GameEngine::Render() {
 	ImGui::Render();
 
+	_game.Render();
 	SDL_RenderClear(_renderer);
 	sceneManager.GetCurrentScene()->Render();
 	SDL_SetRenderDrawColor(_renderer, 255, 255, 255, 255);

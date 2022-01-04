@@ -2,6 +2,7 @@
 #include "SDL.h"
 #include "SceneManager.h"
 #include "Mode.h"
+#include "Game.h"
 #include <Vector>
 
 class GameEngine
@@ -34,6 +35,7 @@ private:
 	SDL_Window* _window;
 	SDL_Renderer* _renderer;
 
+	Game _game;
 	SceneManager sceneManager = SceneManager();
 
 	void Init();
