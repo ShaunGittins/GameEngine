@@ -1,6 +1,6 @@
 #include <iostream>
 #include <SDL.h>
-#include "Game.h"
+#include "GameEngine.h"
 #include "imgui.h"
 #include "imgui_impl_sdl.h"
 #include "imgui_impl_sdlrenderer.h"
@@ -21,7 +21,7 @@ int main(int argc, char* args[]) {
 		SDL_LogError(SDL_LOG_CATEGORY_APPLICATION, "Couldn't create window and renderer: %s", SDL_GetError());
 		return 3;
 	}
-	Game* game = new Game(window, renderer);
+	GameEngine* gameEngine = new GameEngine(window, renderer);
 
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
@@ -32,7 +32,7 @@ int main(int argc, char* args[]) {
 	ImGui_ImplSDL2_InitForSDLRenderer(window);
 	ImGui_ImplSDLRenderer_Init(renderer);
 
-	while (game->running) {
+	while (gameEngine->running) {
 		Uint32 current_step = SDL_GetTicks();
 
 		if (last_step < current_step) {
@@ -41,9 +41,9 @@ int main(int argc, char* args[]) {
 				delta_time = min_delta_time;
 			}
 
-			game->Input();
-			game->Update(delta_time);
-			game->Render();
+			gameEngine->Input();
+			gameEngine->Update(delta_time);
+			gameEngine->Render();
 
 			last_step = current_step;
 		}
@@ -56,6 +56,6 @@ int main(int argc, char* args[]) {
 	ImGui_ImplSDL2_Shutdown();
 	ImGui::DestroyContext();
 
-	delete game;
+	delete gameEngine;
 	return 0;
 }

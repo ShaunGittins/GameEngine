@@ -1,25 +1,8 @@
 #include "Game.h"
-#include "SceneManager.h"
-#include "RenderSystem.h"
-#include "Entity.h"
+#include "Scene.h"
 #include "Math.h"
-
-#include "IComponent.h"
-#include "NameComponent.h"
-#include "RenderComponent.h"
-#include "TransformComponent.h"
-#include "VelocityComponent.h"
-#include "CameraComponent.h"
-
-#include <iostream>
-#include <imgui_impl_sdlrenderer.h>
-#include <imgui_impl_sdl.h>
-using namespace std;
+#include "GameEngine.h"
 using namespace Math;
-
-using std::string;
-using std::cout;
-using std::endl;
 
 const float PLAYER_MOVEMENT_SPEED = 0.5f;
 const float CAMERA_MOVEMENT_SPEED = 0.3f;
@@ -36,115 +19,57 @@ public:
 ControlInput controlInput;
 ControlInput cameraControlInput;
 
-Game::Game(SDL_Window* window, SDL_Renderer* renderer) {
-	_window = window;
-	_renderer = renderer;
-
-	int display_index = SDL_GetWindowDisplayIndex(window);
-	SDL_Rect usable_bounds;
-	if (0 != SDL_GetDisplayUsableBounds(display_index, &usable_bounds)) {
-		SDL_Log("error getting usable bounds");
-		return;
-	}
-
-	SDL_SetWindowPosition(window, usable_bounds.x, usable_bounds.y);
-	SDL_SetWindowSize(window, usable_bounds.w, usable_bounds.h);
-
-	SDL_SetRenderDrawColor(_renderer, 255, 255, 255, 255);
-
-	Init();
-}
-
-Game::~Game() {
-	SDL_DestroyWindow(_window);
-	SDL_DestroyRenderer(_renderer);
-	SDL_Quit();
-}
-
-void Game::Init()
+void Game::Start()
 {
-	// Camera to attach to scene/s
-	int w, h;
-	SDL_GetRendererOutputSize(_renderer, &w, &h);
-	CameraComponent* camera1 = new CameraComponent({ 0.0f, 0.0f, static_cast<float>(w), static_cast<float>(h) });
-	CameraComponent* camera2 = new CameraComponent({ 0.0f, 0.0f, static_cast<float>(w), static_cast<float>(h) });
 	
-	// Add scenes:
-	sceneManager.AddScene(new Scene(_renderer, camera1), "defaultScene.json");
-	sceneManager.AddScene(new Scene(_renderer, camera2), "testingScene.json");
 }
 
-void Game::Input() {
-	const Uint8 *keyboard_state = SDL_GetKeyboardState(NULL);
-	SDL_Event event;
-	while (SDL_PollEvent(&event)) {
-		if (event.type == SDL_KEYDOWN || event.type == SDL_KEYUP) {
-			Scene* currentScene = sceneManager.GetCurrentScene();
-			if (currentScene == sceneManager.GetScene(1)) {
-				// Player movement
-				controlInput.up = (keyboard_state[SDL_SCANCODE_W] && !(keyboard_state[SDL_SCANCODE_S]));
-				controlInput.down = (!keyboard_state[SDL_SCANCODE_W] && (keyboard_state[SDL_SCANCODE_S]));
-				controlInput.left = (keyboard_state[SDL_SCANCODE_A] && !(keyboard_state[SDL_SCANCODE_D]));
-				controlInput.right = (!keyboard_state[SDL_SCANCODE_A] && (keyboard_state[SDL_SCANCODE_D]));
+void Game::End()
+{
+}
 
-				// Camera movement
-				cameraControlInput.up = (keyboard_state[SDL_SCANCODE_UP] && !(keyboard_state[SDL_SCANCODE_DOWN]));
-				cameraControlInput.down = (!keyboard_state[SDL_SCANCODE_UP] && (keyboard_state[SDL_SCANCODE_DOWN]));
-				cameraControlInput.left = (keyboard_state[SDL_SCANCODE_LEFT] && !(keyboard_state[SDL_SCANCODE_RIGHT]));
-				cameraControlInput.right = (!keyboard_state[SDL_SCANCODE_LEFT] && (keyboard_state[SDL_SCANCODE_RIGHT]));
-			}
+void Game::Input(SDL_Event event)
+{
+	if (event.type == SDL_KEYDOWN || event.type == SDL_KEYUP) {
+		const Uint8* keyboard_state = SDL_GetKeyboardState(NULL);
 
-			// Switch scenes
-			if (keyboard_state[SDL_SCANCODE_Y]) {
-				if (sceneManager.GetCurrentSceneNumber() == 0) {
-					sceneManager.SetScene(1);
-				}
-				else {
-					sceneManager.SetScene(0);
-				}
-			}
+		Scene* currentScene = _sceneManager->GetCurrentScene();
+		if (currentScene == _sceneManager->GetScene(1)) {
+			// Player movement
+			controlInput.up = (keyboard_state[SDL_SCANCODE_W] && !(keyboard_state[SDL_SCANCODE_S]));
+			controlInput.down = (!keyboard_state[SDL_SCANCODE_W] && (keyboard_state[SDL_SCANCODE_S]));
+			controlInput.left = (keyboard_state[SDL_SCANCODE_A] && !(keyboard_state[SDL_SCANCODE_D]));
+			controlInput.right = (!keyboard_state[SDL_SCANCODE_A] && (keyboard_state[SDL_SCANCODE_D]));
 
-			// Quit
-			if (keyboard_state[SDL_SCANCODE_ESCAPE]) {
-				if (mode == Mode::RUN) {
-					mode = Mode::EDIT;
-				}
-				else if (mode == Mode::EDIT) {
-					running = false;
-				}
-			}
+			// Camera movement
+			cameraControlInput.up = (keyboard_state[SDL_SCANCODE_UP] && !(keyboard_state[SDL_SCANCODE_DOWN]));
+			cameraControlInput.down = (!keyboard_state[SDL_SCANCODE_UP] && (keyboard_state[SDL_SCANCODE_DOWN]));
+			cameraControlInput.left = (keyboard_state[SDL_SCANCODE_LEFT] && !(keyboard_state[SDL_SCANCODE_RIGHT]));
+			cameraControlInput.right = (!keyboard_state[SDL_SCANCODE_LEFT] && (keyboard_state[SDL_SCANCODE_RIGHT]));
 		}
 
-		if (event.type == SDL_MOUSEMOTION)
-		{
-			SDL_GetMouseState(&xMouse, &yMouse);
+		// Switch scenes
+		if (keyboard_state[SDL_SCANCODE_Y]) {
+			if (_sceneManager->GetCurrentSceneNumber() == 0) {
+				_sceneManager->SetScene(1);
+			}
+			else {
+				_sceneManager->SetScene(0);
+			}
 		}
+	}
 
-		if (mode == Mode::EDIT) {
-			ImGui_ImplSDL2_ProcessEvent(&event);
-		}
+	if (event.type == SDL_MOUSEMOTION)
+	{
+		SDL_GetMouseState(&xMouse, &yMouse);
 	}
 }
 
-#include "GameGUI.h"
+void Game::Update(Uint32 deltaTime)
+{
+	Scene* currentScene = _sceneManager->GetCurrentScene();
 
-void Game::Update(Uint32 deltaTime) {
-	Scene* currentScene = sceneManager.GetCurrentScene();
-
-	if (mode == Mode::EDIT) {
-		ImGui_ImplSDLRenderer_NewFrame();
-		ImGui_ImplSDL2_NewFrame(_window);
-		ImGui::NewFrame();
-
-		GameGUI::ShowEditorMainMenuBar(this);
-		GameGUI::ShowEditorGameControlBar(this);
-		GameGUI::ShowEditorEntityList(currentScene);
-		GameGUI::ShowEditorEntityProperties();
-
-		ImGui::ShowDemoWindow();
-	}
-
-	if (currentScene == sceneManager.GetScene(1)) {
+	if (currentScene == _sceneManager->GetScene(1)) {
 		Vector2 movementVec = Vector2(0.0f, 0.0f);
 
 		if (controlInput.left) movementVec += Vector2(-PLAYER_MOVEMENT_SPEED, 0) * deltaTime;
@@ -175,20 +100,9 @@ void Game::Update(Uint32 deltaTime) {
 		cam->_cameraRect.x += cameraVelocity._x * CAMERA_MOVEMENT_SPEED * deltaTime;
 		cam->_cameraRect.y += cameraVelocity._y * CAMERA_MOVEMENT_SPEED * deltaTime;
 	}
-
-	currentScene->Update();
 }
 
-void Game::Render() {
-	ImGui::Render();
-
-	SDL_RenderClear(_renderer);
-	sceneManager.GetCurrentScene()->Render();
-	SDL_SetRenderDrawColor(_renderer, 255, 255, 255, 255);
-
-	if (mode == Mode::EDIT) {
-		ImGui_ImplSDLRenderer_RenderDrawData(ImGui::GetDrawData());
-	}
-
-	SDL_RenderPresent(_renderer);
+void Game::Render(SDL_Renderer* renderer)
+{
+	SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 }

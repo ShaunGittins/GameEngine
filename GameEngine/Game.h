@@ -1,41 +1,27 @@
 #pragma once
-#include "SDL.h"
+#include <SDL.h>
 #include "SceneManager.h"
-#include "Mode.h"
-#include <Vector>
+
+class GameEngine;
 
 class Game
 {
 public:
-	Game(SDL_Window* SDL_window, SDL_Renderer* renderer);
-	~Game();
+	Game(SceneManager* sceneManager) {
+		_sceneManager = sceneManager;
+	}
 
-	/**
-	* Process input from devices (e.g. keyboard)
-	*/
-	void Input();
+	void Start();
 
-	/**
-	* Update the game
-	*
-	* @param deltaTime time since last update loop
-	*/
+	void End();
+
+	void Input(SDL_Event event);
+
 	void Update(Uint32 deltaTime);
 
-	/**
-	* Draw everything visible to the screen
-	*/
-	void Render();
-
-	bool running = true;
-	Mode mode = Mode::EDIT;
+	void Render(SDL_Renderer* renderer);
 
 private:
-	SDL_Window* _window;
-	SDL_Renderer* _renderer;
-
-	SceneManager sceneManager = SceneManager();
-
-	void Init();
+	SceneManager* _sceneManager;
 };
 
