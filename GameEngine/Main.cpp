@@ -4,9 +4,12 @@
 #include "imgui.h"
 #include "imgui_impl_sdl.h"
 #include "imgui_impl_sdlrenderer.h"
+#include "GUIStyle.h"
 
 const int SCREEN_WIDTH = 1920;
 const int SCREEN_HEIGHT = 1080;
+
+
 
 int main(int argc, char* args[]) {
 	const Uint32 MIN_FPS = 6;
@@ -28,6 +31,7 @@ int main(int argc, char* args[]) {
 	ImGuiIO& io = ImGui::GetIO(); (void)io;
 
 	ImGui::StyleColorsDark();
+	GUIStyle::SetupGUIStyle(&ImGui::GetStyle());
 
 	ImGui_ImplSDL2_InitForSDLRenderer(window);
 	ImGui_ImplSDLRenderer_Init(renderer);

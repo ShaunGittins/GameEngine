@@ -5,7 +5,6 @@
 class GameGUI
 {
 public:
-
     static void ShowEditorMainMenuBar(GameEngine* gameEngine);
 
     static void ShowEditorMenuFile(GameEngine* gameEngine);
