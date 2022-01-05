@@ -11,7 +11,7 @@ public:
 
     static void ShowEditorGameControlBar(GameEngine* gameEngine);
 
-    static void ShowEditorEntityList(Scene* currentScene);
+    static void ShowEditorSceneHierachy(SceneManager* sceneManager);
 
     static void ShowEditorEntityProperties();
 

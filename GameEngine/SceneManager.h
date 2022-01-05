@@ -13,11 +13,13 @@ public:
 	Scene* GetScene(int sceneNumber);
 	void SetScene(int sceneNumber);
 	int GetCurrentSceneNumber();
+	int GetSceneNumber(Scene* scene);
 
 	void Update();
 	void Render();
 
+	std::vector<Scene*> _scenes;
+
 private:
 	int _currentScene = 0;
-	std::vector<Scene*> _scenes;
 };

@@ -100,7 +100,7 @@ void GameEngine::Update(Uint32 deltaTime) {
 
 		GameGUI::ShowEditorMainMenuBar(this);
 		GameGUI::ShowEditorGameControlBar(this);
-		GameGUI::ShowEditorEntityList(currentScene);
+		GameGUI::ShowEditorSceneHierachy(&sceneManager);
 		GameGUI::ShowEditorEntityProperties();
 
 		ImGui::ShowDemoWindow();
