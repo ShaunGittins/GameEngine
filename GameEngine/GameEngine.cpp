@@ -49,15 +49,21 @@ GameEngine::~GameEngine() {
 
 void GameEngine::Init()
 {
-	// Camera to attach to scene/s
 	int w, h;
 	SDL_GetRendererOutputSize(_renderer, &w, &h);
-	CameraComponent* camera1 = new CameraComponent({ 0.0f, 0.0f, static_cast<float>(w), static_cast<float>(h) });
-	CameraComponent* camera2 = new CameraComponent({ 0.0f, 0.0f, static_cast<float>(w), static_cast<float>(h) });
-	
-	// Add scenes:
-	sceneManager.AddScene(new Scene(_renderer, camera1), "defaultScene.json");
-	sceneManager.AddScene(new Scene(_renderer, camera2), "testingScene.json");
+
+	// TODO: Should each scene have it's own systems? Or should they share systems.
+	// It's possible someone may want to extend a system to work uniquely for certain scenes
+
+	CameraComponent* cameraForDefaultScene = new CameraComponent({ 0.0f, 0.0f, static_cast<float>(w), static_cast<float>(h) });
+	RenderSystem* renderSystemForDefaultScene = new RenderSystem(_renderer, cameraForDefaultScene);
+	TransformSystem* transformSystemForDefaultScene = new TransformSystem();
+	sceneManager.AddScene(new Scene(renderSystemForDefaultScene, transformSystemForDefaultScene), "defaultScene.json");
+
+	CameraComponent* cameraForTestingScene = new CameraComponent({ 0.0f, 0.0f, static_cast<float>(w), static_cast<float>(h) });
+	RenderSystem* renderSystemForTestingScene = new RenderSystem(_renderer, cameraForTestingScene);
+	TransformSystem* transformSystemForTestingScene = new TransformSystem();
+	sceneManager.AddScene(new Scene(renderSystemForTestingScene, transformSystemForTestingScene), "testingScene.json");
 }
 
 void GameEngine::Input() {

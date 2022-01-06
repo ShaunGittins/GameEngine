@@ -1,10 +1,10 @@
 #include "Scene.h"
 #include "NameComponent.h"
 
-Scene::Scene(SDL_Renderer* renderer, CameraComponent* mainCamera)
+Scene::Scene(RenderSystem* renderSystem, TransformSystem* transformSystem)
 {
-	_renderSystem = new RenderSystem(renderer, mainCamera);
-	_transformSystem = new TransformSystem();
+	_renderSystem = renderSystem;
+	_transformSystem = transformSystem;
 }
 
 Scene::~Scene()

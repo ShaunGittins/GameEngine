@@ -17,7 +17,7 @@ using std::string;
 class Scene
 {
 public:
-	Scene(SDL_Renderer* renderer, CameraComponent* mainCamera);
+	Scene(RenderSystem* renderSystem, TransformSystem* transformSystem);
 	~Scene();
 
 	void AddEntityToScene(Entity* entity);
