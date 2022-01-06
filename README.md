@@ -8,7 +8,7 @@
 An extension of SDL2 library that implements a base entity component system pattern and a few other basic common game functionality.
 For learning purposes, at the moment.
 
-![gameenginegithubpicture](https://user-images.githubusercontent.com/21079379/147998365-64bd2fce-8bf3-473d-9385-937f409b2c1c.png)
+![gameenginegithubpicture2](https://user-images.githubusercontent.com/21079379/148211584-d60b88d5-3c07-4d92-8b58-4771c7d25714.png)
 
 ### Key Features
 * Design and load entities with preattached components from JSON
