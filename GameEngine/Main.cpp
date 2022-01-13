@@ -11,7 +11,11 @@ const int SCREEN_WIDTH = 1920;
 const int SCREEN_HEIGHT = 1080;
 
 int main(int argc, char* args[]) {
-	SDL_Init(SDL_INIT_EVERYTHING);
+	if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
+		SDL_Log("Unable to initalize SDL: %s", SDL_GetError());
+		return 1;
+	}
+
 	SDL_Window* window;
 	SDL_Renderer* renderer;
 
@@ -39,5 +43,6 @@ int main(int argc, char* args[]) {
 	ImGui::DestroyContext();
 
 	delete gameEngine;
+	SDL_Quit();
 	return 0;
 }
