@@ -79,8 +79,9 @@ void GameGUI::ShowEditorSceneHierachy(SceneManager* sceneManager)
                 sceneManager->SetScene(sceneManager->GetSceneNumber(scene));
             }
         }
-        ImGui::End();
     }
+
+    ImGui::End();
 }
 
 void GameGUI::ShowEditorEntityProperties()
@@ -98,9 +99,9 @@ void GameGUI::ShowEditorEntityProperties()
         else {
             ImGui::Text("No entity selected");
         }
-
-        ImGui::End();
     }
+
+    ImGui::End();
 }
 
 void GameGUI::ShowEditorEntityPropertiesID()
