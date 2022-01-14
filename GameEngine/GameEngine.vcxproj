@@ -185,6 +185,7 @@
     <ClCompile Include="TransformSystem.cpp" />
     <ClCompile Include="Vector2.cpp" />
     <ClCompile Include="VelocityComponent.cpp" />
+    <ClCompile Include="WindowGUI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="CameraComponent.h" />
@@ -217,6 +218,7 @@
     <ClInclude Include="TransformSystem.h" />
     <ClInclude Include="Vector2.h" />
     <ClInclude Include="VelocityComponent.h" />
+    <ClInclude Include="WindowGUI.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
