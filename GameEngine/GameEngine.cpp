@@ -1,24 +1,8 @@
 #include "GameEngine.h"
-#include "SceneManager.h"
-#include "RenderSystem.h"
-#include "Entity.h"
 
-#include "IComponent.h"
-#include "NameComponent.h"
-#include "RenderComponent.h"
-#include "TransformComponent.h"
-#include "VelocityComponent.h"
-#include "CameraComponent.h"
-
-#include <iostream>
+#include "GameGUI.h"
 #include <imgui_impl_sdlrenderer.h>
 #include <imgui_impl_sdl.h>
-using namespace std;
-
-using std::string;
-using std::cout;
-using std::endl;
-
 
 GameEngine::GameEngine(SDL_Window* window, SDL_Renderer* renderer) {
 	_window = window;
@@ -27,7 +11,7 @@ GameEngine::GameEngine(SDL_Window* window, SDL_Renderer* renderer) {
 	int display_index = SDL_GetWindowDisplayIndex(window);
 	SDL_Rect usable_bounds;
 	if (0 != SDL_GetDisplayUsableBounds(display_index, &usable_bounds)) {
-		SDL_Log("error getting usable bounds");
+		SDL_Log("Unable to get usable display bounds");
 		return;
 	}
 
@@ -90,14 +74,10 @@ void GameEngine::Input() {
 	}
 }
 
-#include "GameGUI.h"
-
 void GameEngine::Update(Uint32 deltaTime) {
 
 	if (mode == Mode::RUN || mode == Mode::RUN_DEBUG) 
 		_game.Update(deltaTime);
-
-	Scene* currentScene = sceneManager.GetCurrentScene();
 
 	if (mode == Mode::EDIT) {
 		ImGui_ImplSDLRenderer_NewFrame();
@@ -112,7 +92,7 @@ void GameEngine::Update(Uint32 deltaTime) {
 		ImGui::ShowDemoWindow();
 	}
 
-	currentScene->Update();
+	sceneManager.GetCurrentScene()->Update();
 }
 
 void GameEngine::Render() {

@@ -43,6 +43,5 @@ int main(int argc, char* args[]) {
 	ImGui::DestroyContext();
 
 	delete gameEngine;
-	SDL_Quit();
 	return 0;
 }
