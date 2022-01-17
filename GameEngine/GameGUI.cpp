@@ -131,13 +131,13 @@ void GameGUI::ShowEditorEntityPropertiesRenderComponent()
                 Sprite* mySprite = *rc->sprites.begin();
                 ImGui::Text(("File name: " + mySprite->filename).c_str());
 
-                static float* position[2] = { &mySprite->rect.x, &mySprite->rect.y };
+                float* position[2] = { &mySprite->rect.x, &mySprite->rect.y };
                 ImGui::DragFloat2("Position relative", *(position));
 
-                static float* scale[2] = { &mySprite->rect.w, &mySprite->rect.h };
+                float* scale[2] = { &mySprite->rect.w, &mySprite->rect.h };
                 ImGui::DragFloat2("Size", *(scale));
 
-                static float* pivot[2] = { &mySprite->rotationPoint.x, &mySprite->rotationPoint.y };
+                float* pivot[2] = { &mySprite->rotationPoint.x, &mySprite->rotationPoint.y };
                 ImGui::DragFloat2("Pivot point", *(pivot));
 
                 ImGui::SliderFloat("Angle", &mySprite->angle, -360, 360, "%.0f deg", ImGuiSliderFlags_None);
@@ -152,12 +152,12 @@ void GameGUI::ShowEditorEntityPropertiesTransformComponent()
     if (TransformComponent* tc = selectedEntity->GetComponent<TransformComponent>()) {
         if (ImGui::CollapsingHeader("Transform Component")) {
             ImGui::Text("Transform Component:");
-            static float* position[2] = { &tc->_position._x, &tc->_position._y };
+            float* position[2] = { &tc->_position._x, &tc->_position._y };
             ImGui::DragFloat2("position", *(position));
 
             ImGui::DragFloat("rotation", &tc->_rotation, 1.0f, 0.0f, 360.0f);
 
-            static float* scale[2] = { &tc->_scale._x, &tc->_scale._y };
+            float* scale[2] = { &tc->_scale._x, &tc->_scale._y };
             ImGui::DragFloat2("scale", *(scale));
         }
     }
